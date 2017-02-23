@@ -1,3 +1,8 @@
+#Eclipse PDT
+.settings
+.buildpath
+.project
+
 # Cache and logs (Symfony2)
 /app/cache/*
 /app/logs/*
@@ -11,13 +16,14 @@
 /var/cache/*
 /var/logs/*
 /var/sessions/*
+/var/pdf/*
 !var/cache/.gitkeep
 !var/logs/.gitkeep
 !var/sessions/.gitkeep
+!var/pdf/.gitkeep
 
 # Parameters
-/app/config/parameters.yml
-/app/config/parameters.ini
+/app/config/parameters.yml*
 
 # Managed by Composer
 /app/bootstrap.php.cache
@@ -30,19 +36,21 @@
 # Assets and user uploads
 /web/bundles/
 /web/uploads/
+/web/screenshots/*
+!web/screenshots/.gitkeep
 
 # Assets managed by Bower
 /web/assets/vendor/
 
 # PHPUnit
-/app/phpunit.xml
-/phpunit.xml
+phpunit.xml*
 
 # Build data
 /build/
 
 # Composer PHAR
 /composer.phar
+/composer.lock
 
 # Backup entities generated with doctrine:generate:entities command
 */Entity/*~
