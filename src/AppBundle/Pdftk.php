@@ -41,6 +41,9 @@ class Pdftk {
 			$fs->mkdir($this->_dirPdf, $uniqueId);
 			
 		} catch (IOExceptionInterface $e) {
+			$session->getFlashBag()
+				->add('error', 'Fehler: Verzeichnisse konnten nicht '.
+					'angelegt werden!');
 			return false;	
 		}
 			
@@ -80,7 +83,8 @@ class Pdftk {
 				str_pad($i, 4, '0', STR_PAD_LEFT).'.jpg';
 										
 			shell_exec('convert -thumbnail 400x -colorspace srgb '.
-				'-background white -flatten '.$pdfFile.'['.($i-1).'] '.$screenshot);
+				'-background white -flatten '.$pdfFile.'['.($i-1).'] '.
+				$screenshot);
 		
 			$pages[$i] = $screenshot;
 		}
@@ -89,4 +93,72 @@ class Pdftk {
 		
 		return true;
 	}	
+	
+	/**
+	 * Extract and output a single page as PDF
+	 * 
+	 * @param int $page
+	 */
+	public function extractPage($page)
+	{
+		$fs = new Filesystem();
+		$session = new Session();
+		
+		$pdfFileName = $this->_dirPdf.
+			$session->get('pdf_unique_id').'/file.pdf';
+		
+		$pageFileName = $this->_dirPdf.$session->get('pdf_unique_id').
+			'/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf';
+			
+		if (!$fs->exists($pageFileName)) {
+		
+			shell_exec('pdftk '.$pdfFileName.' burst output '.
+				$this->_dirPdf.$session->get('pdf_unique_id').
+				'/file_page_%04d.pdf');
+		}
+			
+		$downloadFileName = str_replace('.pdf', '_seite_'.
+			str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf',
+			$session->get('pdf_original_filename'));
+			
+		$output = file_get_contents($pageFileName);
+			
+		header('Content-type: application/octet-stream');
+		header('Content-Disposition: attachment; filename="'.
+				$downloadFileName.'"');
+		echo($output);
+		exit;
+	}
+	
+	/**
+	 * Create and download a screenshot
+	 *
+	 * @param int $page
+	 */
+	public function getScreenshot($page)
+	{
+		$session = new Session();
+	
+		$scrFileName = $this->_dirScr.$session->get('pdf_unique_id').
+			'/page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.jpg';
+	
+		$fs = new Filesystem();
+		
+		if ($fs->exists($scrFileName)) {
+	
+			$downloadFileName = str_replace('.pdf', '_seite_'.
+				str_pad($page, 4, '0', STR_PAD_LEFT).'.jpg',
+				$session->get('pdf_original_filename'));
+			
+			$output = file_get_contents($scrFileName);
+			
+			header('Content-type: application/octet-stream');
+			header('Content-Disposition: attachment; filename="'.
+				$downloadFileName.'"');
+			echo($output);
+			exit;
+		}
+	}
+	
+	
 }

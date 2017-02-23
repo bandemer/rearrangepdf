@@ -4,6 +4,13 @@
 
 <div class="container">
             
+    {% if app.session.flashBag.has('error') %}
+    <div class="alert alert-danger" role="alert">
+        {% for msg in app.session.flashBag.get('error') %}
+            {{ msg }}
+        {% endfor %}
+    </div>
+    {% endif %}
     
     <div class="row">
         

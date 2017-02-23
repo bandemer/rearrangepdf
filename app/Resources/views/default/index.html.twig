@@ -6,6 +6,14 @@
             
     <h1>Upload PDF-File</h1>
         
+    {% if app.session.flashBag.has('error') %}
+    <div class="alert alert-danger" role="alert">
+        {% for msg in app.session.flashBag.get('error') %}
+            {{ msg }}
+        {% endfor %}
+    </div>
+    {% endif %}
+    
     {{ form_start(form) }}
     {{ form_widget(form) }}
     {{ form_end(form) }}

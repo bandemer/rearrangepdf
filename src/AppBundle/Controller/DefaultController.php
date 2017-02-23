@@ -46,7 +46,7 @@ class DefaultController extends Controller
 			if ($check) {
 				return $this->redirectToRoute('show');
 			} else {
-				
+				return $this->redirectToRoute('index');				
 			}
 		} 
 			
@@ -76,35 +76,32 @@ class DefaultController extends Controller
 	public function extractAction($page)
 	{
 		$session = new Session();
+		$page = intval($page);
 		
 		if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
-			
-			$fs = new Filesystem();
-			
-			$pageFileName = '../var/pdf/'.$session->get('pdf_filename').
-				'_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf';
-			
-			if (!$fs->exists($pageFileName)) {
-				
-				shell_exec('pdftk ../var/pdf/'.
-					$session->get('pdf_filename').'.pdf burst output '.
-					'../var/pdf/'.$session->get('pdf_filename').'_%04d.pdf');
-			}
-			
-			$downloadFileName = str_replace('.pdf', '_seite_'.
-				str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf', 
-				$session->get('pdf_original_filename'));
-			
-			$output = file_get_contents($pageFileName);
-			
-			header('Content-type: application/octet-stream');
-			header('Content-Disposition: attachment; filename="'.
-				$downloadFileName.'"');
-			die($output);
-			
+			$pdftk = new Pdftk();
+			$pdftk->extractPage($page);			
 		} 		
-		die('Fehler!');
+		$session->getFlashBag()->add(
+			'error', 'Fehler: Seite konnte nicht extrahiert werden!');
+		return $this->redirectToRoute('show');
+	}
+	
+	/**
+	 * @Route("/screenshot/{page}", name="screenshot")
+	 */
+	public function screenshotAction($page)
+	{
+		$session = new Session();
+		$page = intval($page);
 		
+		if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
+			$pdftk = new Pdftk();
+			$pdftk->getScreenshot($page);
+		}
+		$session->getFlashBag()->add(
+				'error', 'Fehler: Screenshot konnte nicht erstellt werden!');
+		return $this->redirectToRoute('show');
 	}
 	
 	
