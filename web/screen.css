@@ -1,8 +1,17 @@
 @CHARSET "UTF-8";
+.container {
+	padding-top:1rem;
+}
 .card {
 	margin-top:1rem;
 }
-
 #sidebar {
 	position:fixed;
+}
+.download {
+	padding:1rem;	
+}
+.label {
+	display:block;
+	width:10rem;
 }

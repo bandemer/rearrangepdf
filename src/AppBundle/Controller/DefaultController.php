@@ -7,7 +7,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\Filesystem\Filesystem;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Pdftk;
 
@@ -104,6 +103,16 @@ class DefaultController extends Controller
 		return $this->redirectToRoute('show');
 	}
 	
-	
-	
+	/**
+	 * @Route("/download/", name="download")
+	 */
+	public function downloadAction()
+	{
+		$pdftk = new Pdftk();
+		if (!$pdftk->download()) {
+			$session->getFlashBag()->add(
+				'error', 'Fehler: Download konnte nicht gestartet werden!');
+		}
+		return $this->redirectToRoute('show');
+	}
 }

@@ -14,20 +14,20 @@
     
     <div class="row">
         
-        <div class="col-sm-8">
+        <div class="col-sm-9">
         
-            <h1>PDF-Pages</h1>
+            <h1>Übersicht Seiten</h1>
             {% for page in pdf_pages %}
             
             <div class="card">
                 <div class="card-header">
-                    <h3>Page {{ loop.index }}</h3>
+                    <h3>Seite {{ loop.index }}</h3>
                     
-                    <span><a href="/extract/{{ loop.index }}">Extract</a></span>
+                    <span><a href="/extract/{{ loop.index }}">Extrahieren als PDF</a></span>
                     <span><a href="/screenshot/{{ loop.index }}">Screenshot</a></span>
-                    <span><a href="/moveup/{{ loop.index }}">Move Up</a></span>
-                    <span><a href="/movedown/{{ loop.index }}">Move Down</a></span>
-                    <span><a href="/delete/{{ loop.index }}">Delete</a></span>
+                    <span><a href="/moveup/{{ loop.index }}">Nach oben</a></span>
+                    <span><a href="/movedown/{{ loop.index }}">Nach unten</a></span>
+                    <span><a href="/delete/{{ loop.index }}">Löschen</a></span>
                     
                 </div>
                 <div class="card-block">
@@ -39,12 +39,25 @@
              
        
         </div>
-        <div class="col-sm-4" id="sidebar">
+        <div class="col-sm-3" id="sidebar">
         
-            <h2>File Infos</h2>
-            Filename: {{ pdf_original_filename }}<br>
-            Filesize: {{ pdf_filesize }} Bytes<br>
-            No. of Pages: {{ pdf_pages|length }}
+            <h2>Infos zur Datei</h2>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <strong class="label">Dateiname:</strong> {{ pdf_original_filename }}
+                </li>
+                <li class="list-group-item">
+                    <strong class="label">Dateigröße:</strong> {{ pdf_filesize }}
+                </li>
+                <li class="list-group-item">
+                    <strong class="label">Anzahl Seiten:</strong> {{ pdf_pages|length }}
+                </li>
+            </ul>
+            
+            <div class="download">
+                <a href="/download/" class="btn btn-primary">Download PDF</a>
+            </div>
+            
         </div>
         
     </div>

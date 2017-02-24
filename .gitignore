@@ -44,13 +44,14 @@
 
 # PHPUnit
 phpunit.xml*
+phpunit*.phar
 
 # Build data
 /build/
 
 # Composer PHAR
-/composer.phar
-/composer.lock
+composer.phar
+composer.lock
 
 # Backup entities generated with doctrine:generate:entities command
 */Entity/*~

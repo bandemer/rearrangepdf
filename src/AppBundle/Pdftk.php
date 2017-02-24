@@ -59,7 +59,7 @@ class Pdftk {
 			return false;
 		}
 		
-		$fileSize = filesize($pdfFile);
+		$fileSize = $this->_readableFileSize(filesize($pdfFile));
 		
 		$session->set('pdf_filesize', $fileSize);
 			
@@ -160,5 +160,68 @@ class Pdftk {
 		}
 	}
 	
+	/**
+	 * Download complete PDF
+	 *
+	 */
+	public function download()
+	{
+		$session = new Session();
+		$fs = new Filesystem();
+		
+		$pdfFileName = $this->_dirPdf.
+			$session->get('pdf_unique_id').'/file.pdf';
+	
+		if ($fs->exists($pdfFileName)) {
+	
+			$output = file_get_contents($pdfFileName);
+				
+			header('Content-type: application/octet-stream');
+			header('Content-Disposition: attachment; filename="'.
+					$session->get('pdf_original_filename').'"');
+			echo($output);
+			exit;
+		} 
+		return false;		
+	}
+	
+	/**
+	 * Format file size
+	 * 
+	 * @param int $bytes
+	 * @return string
+	 */
+	private function _readableFileSize($bytes)
+	{
+		$sizes = array('Bytes', 'KBytes', 'MBytes', 'GBytes');		
+		$count = 0;
+		$temp = $bytes;
+		while ($temp >= 1024) {
+			$temp = floor($temp / 1024);
+			++$count;
+		}
+		if ($count > 0) {
+			$fileSize = round($bytes / pow(1024, $count), 2);
+			return number_format($fileSize, 2, ',', '.').' '.$sizes[$count];
+		} else {
+			return $bytes.' '.$sizes[$count];
+		}
+	}
+	
+	/**
+	 * Shorten file name
+	 * 
+	 * @param string $name
+	 * @return string $formatted
+	 */
+	private function _shortenFileName($fileName) 
+	{
+		$returnString = $fileName;
+		if (strlen($fileName) > 30) {
+			$returnString = mb_substr($fileName,0, 14).'..'.
+				mb_substr($fileName, strlen($fileName)-14);
+		}
+		return $returnString;
+	}
 	
 }
