@@ -29,6 +29,8 @@ class Pdftk {
 	{
 		$session = new Session();
 		$session->set('pdf_original_filename', $file->getClientOriginalName());
+		$session->set('pdf_shorten_filename', 
+			$this->_shortenFileName($file->getClientOriginalName()));
 			
 		$uniqueId = date('Ymdhis').'_'.uniqid();
 		

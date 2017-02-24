@@ -35,9 +35,11 @@
 
 # Assets and user uploads
 /web/bundles/
-/web/uploads/
+/web/css/font-awesome*
+/web/fonts/
 /web/screenshots/*
 !web/screenshots/.gitkeep
+/web/uploads/
 
 # Assets managed by Bower
 /web/assets/vendor/
