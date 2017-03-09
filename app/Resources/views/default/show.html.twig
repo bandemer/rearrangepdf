@@ -42,7 +42,7 @@
                         <a href="/screenshot/{{ loop.index }}" class="btn btn-secondary"><i class="fa fa-file-image-o"></i> Screenshot</a>
                         <a href="/moveup/{{ loop.index }}" class="btn btn-secondary"><i class="fa fa-arrow-up"></i> Nach oben</a>
                         <a href="/movedown/{{ loop.index }}" class="btn btn-secondary"><i class="fa fa-arrow-down"></i> Nach unten</a>
-                        <a href="/delete/{{ loop.index }}" class="btn btn-secondary" onclick="return confirm('Wollen Sie die Seite wirklich löschen?');"><i class="fa fa-trash"></i> Löschen</a>
+                        <a href="/delete/{{ loop.index }}" class="btn btn-secondary {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('Wollen Sie die Seite {{ loop.index }} wirklich löschen?');"><i class="fa fa-trash"></i> Löschen</a>
                     </div>
                     
                     <div class="screenshot">
@@ -66,7 +66,7 @@
                     <strong class="label">Dateigröße:</strong> {{ pdf_filesize }}
                 </li>
                 <li class="list-group-item">
-                    <strong class="label">Anzahl Seiten:</strong> {{ pdf_pages|length }}
+                    <strong class="label">Seitenzahl:</strong> {{ pdf_pages|length }}
                 </li>
             </ul>
             

@@ -74,10 +74,32 @@ class Pdftk {
 			return false;
 		}
 		
-		$fileSize = $this->_readableFileSize(filesize($pdfFile));
-		
-		$session->set('pdf_filesize', $fileSize);
+		//delete screenshots and page pdf, if pages exist
+		if (is_array($session->get('pdf_pages'))) {
+			$pages = $session->get('pdf_pages');
+			$fs = new Filesystem();
 			
+			foreach ($pages AS $pk => $pv) {
+				
+				//delete Screenshot
+				if ($fs->exists($pv)) {
+					$fs->remove($pv);
+				}
+				
+				//delete PDF page
+				$pageFile = '../var/pdf/'.$session->get('pdf_unique_id').
+					'/file_page_'.str_pad($pk, 4, '0', STR_PAD_LEFT).'.pdf';
+				if ($fs->exists($pageFile)) {
+					$fs->remove($pageFile);
+				}				
+			}
+		}
+		
+		//Dateigröße ermitteln
+		$fileSize = $this->_readableFileSize(filesize($pdfFile));
+		$session->set('pdf_filesize', $fileSize);
+		
+		//Anzahl der Seiten ermitteln
 		shell_exec('pdftk '.$pdfFile.' dump_data_utf8 output '.$dataFile);
 			
 		$data = explode("\n", file_get_contents($dataFile));
@@ -91,7 +113,8 @@ class Pdftk {
 		}
 			
 		$pages = array();
-			
+		
+		//Screenshots erzeugen	
 		for ($i = 1; $i <= $pageCount; $i++) {
 		
 			$screenshot = $this->_dirScr.$session->get('pdf_unique_id').
@@ -108,8 +131,6 @@ class Pdftk {
 		
 		return true;		
 	}
-	
-	
 	
 	/**
 	 * Extract and output a single page as PDF
