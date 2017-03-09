@@ -20,12 +20,12 @@ class Pdftk {
 	private $_dirScr = 'screenshots/';
 
 	/**
-	 * Parse uploaded file
+	 * Prepare uploaded file
 	 * 
 	 * @param Symfony\Component\HttpFoundation\File\UploadedFile $file
 	 * @return bool
 	 */
-	public function prepareFile($file) 
+	public function prepareUploadedFile($file) 
 	{
 		$session = new Session();
 		$session->set('pdf_original_filename', $file->getClientOriginalName());
@@ -51,8 +51,21 @@ class Pdftk {
 			
 		$file->move($this->_dirPdf.$uniqueId, 'file.pdf');
 			
-		$pdfFile = $this->_dirPdf.$uniqueId.'/file.pdf';
-		$dataFile = $this->_dirPdf.$uniqueId.'/file_data.txt';
+		return $this->processFile();
+	}	
+	
+	/**
+	 * process a pdf file
+	 * @return boolean
+	 */
+	public function processFile()
+	{
+		$session = new Session();
+		
+		$pdfFile = $this->_dirPdf.
+			$session->get('pdf_unique_id').'/file.pdf';
+		$dataFile = $this->_dirPdf.
+			$session->get('pdf_unique_id').'/file_data.txt';
 		
 		//Check if PDF
 		if (substr(file_get_contents($pdfFile), 0, 4) != '%PDF') {
@@ -66,7 +79,7 @@ class Pdftk {
 		$session->set('pdf_filesize', $fileSize);
 			
 		shell_exec('pdftk '.$pdfFile.' dump_data_utf8 output '.$dataFile);
-							
+			
 		$data = explode("\n", file_get_contents($dataFile));
 		$pageCount = 0;
 		$pageCountPattern = "/^NumberOfPages: ([0-9]+)$/";
@@ -76,25 +89,27 @@ class Pdftk {
 				break;
 			}
 		}
-							
+			
 		$pages = array();
-							
+			
 		for ($i = 1; $i <= $pageCount; $i++) {
-								
-			$screenshot = $this->_dirScr.$uniqueId.'/page_'.
-				str_pad($i, 4, '0', STR_PAD_LEFT).'.jpg';
-										
+		
+			$screenshot = $this->_dirScr.$session->get('pdf_unique_id').
+				'/page_'.str_pad($i, 4, '0', STR_PAD_LEFT).'.jpg';
+		
 			shell_exec('convert -thumbnail 400x -colorspace srgb '.
 				'-background white -flatten '.$pdfFile.'['.($i-1).'] '.
 				$screenshot);
-		
+			
 			$pages[$i] = $screenshot;
 		}
 		
 		$session->set('pdf_pages', $pages);
 		
-		return true;
-	}	
+		return true;		
+	}
+	
+	
 	
 	/**
 	 * Extract and output a single page as PDF
@@ -185,6 +200,44 @@ class Pdftk {
 			exit;
 		} 
 		return false;		
+	}
+	
+	/**
+	 * Delete a page
+	 *
+	 * @param int $page
+	 */
+	public function delete($page)
+	{
+		
+		$session = new Session();
+		
+		$pdfFileName = $this->_dirPdf.
+			$session->get('pdf_unique_id').'/file.pdf';
+		
+		//make a backup of file
+		$fs = new Filesystem();
+		$fs->copy($pdfFileName, str_replace('.pdf', '.bac.pdf', $pdfFileName));
+			
+		//delete page
+		$pages = $session->get('pdf_pages');
+		$option = '';
+		if ($page == 1) {
+			$option = '2-end';
+		} elseif ($page == count($pages)) {
+			$option = '1-'.(count($pages)-1);
+		} else {
+			$option = '1-'.($page-1).' '.($page+1).'-end';
+		}
+		shell_exec('pdftk '.$pdfFileName.' cat '.$option.' output '.
+			str_replace('.pdf', '.new.pdf', $pdfFileName));
+		
+		//remove original file and rename new file 
+		$fs->remove($pdfFileName);
+		$fs->rename(str_replace('.pdf', '.new.pdf', $pdfFileName), 
+			$pdfFileName);
+		
+		return $this->processFile();		
 	}
 	
 	/**

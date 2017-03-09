@@ -3,9 +3,11 @@
 namespace Tests\AppBundle;
 
 use AppBundle\Pdftk;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PdftkTest extends \PHPUnit_Framework_TestCase
 {
+	
 	/**
 	 * Test for private function readableFileSize
 	 */

@@ -36,7 +36,7 @@ class DefaultController extends Controller
 				
 				foreach ($file AS $f) {
 					
-					$check = $pdftk->prepareFile($f);
+					$check = $pdftk->prepareUploadedFile($f);
 					break;		
 				}
 				break;
@@ -116,4 +116,33 @@ class DefaultController extends Controller
 		}
 		return $this->redirectToRoute('show');
 	}
+	
+	/**
+	 * @Route("/delete/{page}", name="delete")
+	 */
+	public function deleteAction($page)
+	{
+		$session = new Session();
+		$page = intval($page);
+	
+		if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
+			$pdftk = new Pdftk();
+			
+			if ($pdftk->delete($page)) {
+				$session->getFlashBag()->add(
+					'success', 
+					'OK! Seite '.$page.' wurde erfolgreich gelöscht!');
+			} else {
+				$session->getFlashBag()->add(
+					'error', 
+					'Fehler: Seite '.$page.' konnte nicht gelöscht werden!');
+			}
+		} else {
+			$session->getFlashBag()->add(
+				'error', 'Fehler: Ungültige Seitenzahl');
+		}
+		
+		return $this->redirectToRoute('show');
+	}
+	
 }
