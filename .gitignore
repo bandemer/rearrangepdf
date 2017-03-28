@@ -45,7 +45,6 @@
 /web/assets/vendor/
 
 # PHPUnit
-phpunit.xml*
 phpunit*.phar
 
 # Build data
