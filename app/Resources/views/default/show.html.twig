@@ -33,17 +33,18 @@
             
             <div class="card">
                 <div class="card-header">
-                    <h3>Seite {{ loop.index }}</h3>
-                </div>
-                <div class="card-block">
-                
-                    <div class="btn-group-vertical pull-right" role="group" aria-label="Aktionen für Seite {{ loop.index }}">
+                    <h3 class="float-left">Seite {{ loop.index }}</h3>
+                    <div class="btn-group float-right" role="group" aria-label="Aktionen für Seite {{ loop.index }}">
                         <a href="/extract/{{ loop.index }}" class="btn btn-secondary"><i class="fa fa-file-pdf-o"></i> Extrahieren</a>
                         <a href="/screenshot/{{ loop.index }}" class="btn btn-secondary"><i class="fa fa-file-image-o"></i> Screenshot</a>
                         <a href="/moveup/{{ loop.index }}" class="btn btn-secondary"><i class="fa fa-arrow-up"></i> Nach oben</a>
                         <a href="/movedown/{{ loop.index }}" class="btn btn-secondary"><i class="fa fa-arrow-down"></i> Nach unten</a>
                         <a href="/delete/{{ loop.index }}" class="btn btn-secondary {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('Wollen Sie die Seite {{ loop.index }} wirklich löschen?');"><i class="fa fa-trash"></i> Löschen</a>
                     </div>
+                </div>
+                <div class="card-block">
+                
+                    
                     
                     <div class="screenshot">
                         <img src="/{{ page }}" alt="Page {{ loop.index }}">
@@ -55,25 +56,27 @@
              
        
         </div>
-        <div class="col-sm-3" id="sidebar">
+        <div class="col-sm-3">
+        	<div class="sticky-top">
         
-            <h2>Infos zur Datei</h2>
-            <ul class="list-group">
-                <li class="list-group-item">
-                    <strong class="label">Dateiname:</strong> {{ pdf_shorten_filename }}
-                </li>
-                <li class="list-group-item">
-                    <strong class="label">Dateigröße:</strong> {{ pdf_filesize }}
-                </li>
-                <li class="list-group-item">
-                    <strong class="label">Seitenzahl:</strong> {{ pdf_pages|length }}
-                </li>
-            </ul>
-            
-            <div class="download">
-                <a href="/download/" class="btn btn-primary">
-                    <i class="fa fa-download" aria-hidden="true"></i> Download PDF
-                </a>
+	            <h2>Infos zur Datei</h2>
+	            <ul class="list-group">
+	                <li class="list-group-item">
+	                    <strong class="label">Dateiname:</strong> {{ pdf_shorten_filename }}
+	                </li>
+	                <li class="list-group-item">
+	                    <strong class="label">Dateigröße:</strong> {{ pdf_filesize }}
+	                </li>
+	                <li class="list-group-item">
+	                    <strong class="label">Seitenzahl:</strong> {{ pdf_pages|length }}
+	                </li>
+	            </ul>
+	            
+	            <div class="download">
+	                <a href="/download/" class="btn btn-primary">
+	                    <i class="fa fa-download" aria-hidden="true"></i> Download PDF
+	                </a>
+	            </div>
             </div>
             
         </div>

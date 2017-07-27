@@ -42,7 +42,7 @@ class Pdftk {
 			$fs->mkdir($this->_dirScr. $uniqueId);
 			$fs->mkdir($this->_dirPdf, $uniqueId);
 			
-		} catch (IOExceptionInterface $e) {
+		} catch (\Exception $e) {
 			$session->getFlashBag()
 				->add('error', 'Fehler: Verzeichnisse konnten nicht '.
 					'angelegt werden!');
