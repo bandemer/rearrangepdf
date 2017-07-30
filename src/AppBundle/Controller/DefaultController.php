@@ -105,17 +105,26 @@ class DefaultController extends Controller
 	}
 	
 	/**
-	 * @Route("/download/", name="download")
+	 * @Route("/move{direction}/{page}", name="move")
 	 */
-	public function downloadAction()
+	public function moveAction($direction, $page)
 	{
-		$pdftk = new Pdftk();
-		if (!$pdftk->download()) {
-			$session->getFlashBag()->add(
-				'error', 'Fehler: Download konnte nicht gestartet werden!');
-		}
-		return $this->redirectToRoute('show');
+	    $session = new Session();
+	    $page = intval($page);
+	    
+	    if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
+	        
+	        $pdftk = new Pdftk();
+	        $pdftk->move($direction, $page);
+	        
+	        $session->getFlashBag()->add(
+	            'success',
+	            'OK! Die Seite wurde erfolgreich verschoben!');
+	    }	    
+	    
+        return $this->redirectToRoute('show');
 	}
+	
 	
 	/**
 	 * @Route("/delete/{page}", name="delete")
@@ -143,6 +152,19 @@ class DefaultController extends Controller
 		}
 		
 		return $this->redirectToRoute('show');
+	}
+	
+	/**
+	 * @Route("/download/", name="download")
+	 */
+	public function downloadAction()
+	{
+	    $pdftk = new Pdftk();
+	    if (!$pdftk->download()) {
+	        $session->getFlashBag()->add(
+	            'error', 'Fehler: Download konnte nicht gestartet werden!');
+	    }
+	    return $this->redirectToRoute('show');
 	}
 	
 }

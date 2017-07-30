@@ -87,7 +87,7 @@ class Pdftk {
 				}
 				
 				//delete PDF page
-				$pageFile = '../var/pdf/'.$session->get('pdf_unique_id').
+				$pageFile = $this->_dirPdf.$session->get('pdf_unique_id').
 					'/file_page_'.str_pad($pk, 4, '0', STR_PAD_LEFT).'.pdf';
 				if ($fs->exists($pageFile)) {
 					$fs->remove($pageFile);
@@ -230,7 +230,6 @@ class Pdftk {
 	 */
 	public function delete($page)
 	{
-		
 		$session = new Session();
 		
 		$pdfFileName = $this->_dirPdf.
@@ -259,6 +258,97 @@ class Pdftk {
 			$pdfFileName);
 		
 		return $this->processFile();		
+	}
+	
+	/**
+	 * Move a page
+	 *
+	 * @param string $direction
+	 * @param int $page	 
+	 */
+	public function move($direction, $page)
+	{
+	    $session = new Session();
+	    
+	    $pdfFileName = $this->_dirPdf.
+            $session->get('pdf_unique_id').'/file.pdf';
+	    
+	    //make a backup of file
+	    $fs = new Filesystem();
+	    $fs->copy($pdfFileName, str_replace('.pdf', '.bac.pdf', $pdfFileName));
+	    
+	    //Burst, if pdf-pages not yet exist  
+	    $doBurst = false;
+	    if (is_array($session->get('pdf_pages'))) {
+	        
+	        foreach ($session->get('pdf_pages') AS $pk => $pv) {
+	            if ($fs->exists($this->_dirPdf.$session->get('pdf_unique_id').'file_page_'.
+	                str_pad($pk, 4, '0', STR_PAD_LEFT).'.pdf') == false) {
+	                $doBurst = true;
+	                break;
+	            }
+	        }
+	    } else {
+	        $doBurst = true;
+	    }
+	    if ($doBurst) {
+           $shell_output = shell_exec('pdftk '.$pdfFileName.' burst output '.
+                $this->_dirPdf.$session->get('pdf_unique_id').
+                '/file_page_%04d.pdf verbose');
+	    }
+	    $pages = $session->get('pdf_pages');
+	    
+	    //Rename
+	    if ($direction == 'up' AND $page > 1) {
+	        
+	        $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+	            '/file_page_'.str_pad($page-1, 4, '0', STR_PAD_LEFT).'.pdf',
+	            $this->_dirPdf.$session->get('pdf_unique_id').
+	            '/file_page_'.str_pad($page-1, 4, '0', STR_PAD_LEFT).'.pdf.bac');
+            $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+                '/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf',
+                $this->_dirPdf.$session->get('pdf_unique_id').
+	            '/file_page_'.str_pad($page-1, 4, '0', STR_PAD_LEFT).'.pdf');
+            $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+                '/file_page_'.str_pad($page-1, 4, '0', STR_PAD_LEFT).'.pdf.bac',
+                $this->_dirPdf.$session->get('pdf_unique_id').
+	            '/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf');
+	        
+	    } elseif ($direction == 'down' AND $page < (count($pages))) {
+	        
+	        $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+	            '/file_page_'.str_pad($page+1, 4, '0', STR_PAD_LEFT).'.pdf',
+	            $this->_dirPdf.$session->get('pdf_unique_id').
+	            '/file_page_'.str_pad($page+1, 4, '0', STR_PAD_LEFT).'.pdf.bac');
+            $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+                '/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf',
+	            $this->_dirPdf.$session->get('pdf_unique_id').
+	            '/file_page_'.str_pad($page+1, 4, '0', STR_PAD_LEFT).'.pdf');
+            $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+                '/file_page_'.str_pad($page+1, 4, '0', STR_PAD_LEFT).'.pdf.bac',
+                $this->_dirPdf.$session->get('pdf_unique_id').
+	            '/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf');
+	                
+	    } 	    
+	    
+	    //Join
+	    $command = 'pdftk ';
+	    foreach ($session->get('pdf_pages') AS $pk => $pv) {
+	        $command .= $this->_dirPdf.$session->get('pdf_unique_id').'/file_page_'.
+                str_pad($pk, 4, '0', STR_PAD_LEFT).'.pdf ';
+	    }
+	    $command .= 'cat output '.
+	        $this->_dirPdf.$session->get('pdf_unique_id').
+	        '/file.pdf verbose';
+	    
+	    $shell_output = shell_exec($command);
+	    dump($command);
+	    
+	    $fs->remove($this->_dirPdf.$session->get('pdf_unique_id').
+	        '/file.bac.pdf');
+	    
+	    
+	    return $this->processFile();
 	}
 	
 	/**
