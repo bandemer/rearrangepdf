@@ -9,6 +9,4 @@ before_install:
   - composer show -i  
 before_script:
   - phpunit --version
-  - phpunit --self-update
-  - phpunit --version
   
