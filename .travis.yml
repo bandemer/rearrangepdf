@@ -8,5 +8,7 @@ before_install:
   - if [ "$dependencies" = "highest" ]; then composer update -n; fi;
   - composer show -i  
 before_script:
-  - phpunit self-update 
+  - phpunit --version
+  - phpunit --self-update
+  - phpunit --version
   
