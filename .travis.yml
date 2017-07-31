@@ -1,13 +1,12 @@
-before_script:
+language: php
+php:
+  - '7.1'
+before_install:
   - if [ -n "$Github_Token" ]; then composer config github-oauth.github.com ${Github_Token}; fi;
   - if [ -z "$dependencies" ]; then composer install; fi;
   - if [ "$dependencies" = "lowest" ]; then composer update --prefer-lowest -n; fi;
   - if [ "$dependencies" = "highest" ]; then composer update -n; fi;
   - composer show -i  
-language: php
-php:
-  - '7.1'
-  - hhvm
-  - nightly
-install:
-  - composer install
+before_script:
+  - phpunit self-update 
+  
