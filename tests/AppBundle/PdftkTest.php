@@ -3,7 +3,6 @@
 namespace Tests\AppBundle;
 
 use AppBundle\Pdftk;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PdftkTest extends \PHPUnit\Framework\TestCase
 {
@@ -59,4 +58,19 @@ class PdftkTest extends \PHPUnit\Framework\TestCase
 			$this->assertEquals($v, $method->invokeArgs($pdftk, array($k)));
 		}
 	}
+	
+	/**
+	 * 
+	 */
+	public function testProcessFile()
+	{
+	    $pdftk = new Pdftk();
+	    
+	    $this->assertTrue($pdftk->processFile(), 'Fehler! Datei wurde nicht korrekt verarbeitet');
+	}
+	
+	
+	
+	
+	
 }

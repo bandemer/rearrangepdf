@@ -3,6 +3,7 @@
 namespace AppBundle; 
 
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\Filesystem\Filesystem;
 
 class Pdftk {
@@ -22,7 +23,7 @@ class Pdftk {
 	/**
 	 * Prepare uploaded file
 	 * 
-	 * @param Symfony\Component\HttpFoundation\File\UploadedFile $file
+	 * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
 	 * @return bool
 	 */
 	public function prepareUploadedFile($file) 
@@ -60,7 +61,8 @@ class Pdftk {
 	 */
 	public function processFile()
 	{
-		$session = new Session();
+	    
+	    $session = new Session();
 		
 		$pdfFile = $this->_dirPdf.
 			$session->get('pdf_unique_id').'/file.pdf';
