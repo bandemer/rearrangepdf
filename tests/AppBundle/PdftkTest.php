@@ -3,6 +3,8 @@
 namespace Tests\AppBundle;
 
 use AppBundle\Pdftk;
+use AppBundle\Testablesession;
+
 
 class PdftkTest extends \PHPUnit\Framework\TestCase
 {
@@ -64,8 +66,15 @@ class PdftkTest extends \PHPUnit\Framework\TestCase
 	 */
 	public function testProcessFile()
 	{
-	    $pdftk = new Pdftk();
+	    $uniqueId = date('YmdHis').'_test';
+	    mkdir('var/pdf/'.$uniqueId);
+	    copy('tests/test.pdf', 'var/pdf/'.$uniqueId.'/file.pdf');
 	    
+	    $session = new Testablesession();
+	    $session->start();
+	    $session->set('pdf_unique_id', $uniqueId);
+	    
+	    $pdftk = new Pdftk();
 	    $this->assertTrue($pdftk->processFile(), 'Fehler! Datei wurde nicht korrekt verarbeitet');
 	}
 	

@@ -1,5 +1,6 @@
 <?php
 
+/*
 namespace Tests\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -16,3 +17,4 @@ class DefaultControllerTest extends WebTestCase
         $this->assertContains('Upload', $crawler->filter('h1')->text());
     }
 }
+*/

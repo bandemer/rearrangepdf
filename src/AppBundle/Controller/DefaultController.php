@@ -2,13 +2,13 @@
 
 namespace AppBundle\Controller;
 
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use AppBundle\Pdftk;
+use AppBundle\Testablesession;
 
 class DefaultController extends Controller
 {
@@ -27,7 +27,7 @@ class DefaultController extends Controller
 			
 		if ($form->isSubmitted() && $form->isValid()) {
 			
-			$session = new Session();
+			$session = new Testablesession();
 			$pdftk = new Pdftk();
 			
 			$check = false;
@@ -59,7 +59,7 @@ class DefaultController extends Controller
 	 */
 	public function showAction()
 	{
-		$session = new Session();
+	    $session = new Testablesession();
 		
 		return $this->render('default/show.html.twig', array(
 			'pdf_unique_id' => $session->get('pdf_unique_id'),
@@ -75,7 +75,7 @@ class DefaultController extends Controller
 	 */
 	public function extractAction($page)
 	{
-		$session = new Session();
+	    $session = new Testablesession();
 		$page = intval($page);
 		
 		if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
@@ -92,7 +92,7 @@ class DefaultController extends Controller
 	 */
 	public function screenshotAction($page)
 	{
-		$session = new Session();
+	    $session = new Testablesession();
 		$page = intval($page);
 		
 		if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
@@ -109,7 +109,7 @@ class DefaultController extends Controller
 	 */
 	public function moveAction($direction, $page)
 	{
-	    $session = new Session();
+	    $session = new Testablesession();
 	    $page = intval($page);
 	    
 	    if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
@@ -131,7 +131,7 @@ class DefaultController extends Controller
 	 */
 	public function deleteAction($page)
 	{
-		$session = new Session();
+	    $session = new Testablesession();
 		$page = intval($page);
 	
 		if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {

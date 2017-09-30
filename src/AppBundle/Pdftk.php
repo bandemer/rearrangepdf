@@ -2,9 +2,8 @@
 
 namespace AppBundle; 
 
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage;
 use Symfony\Component\Filesystem\Filesystem;
+use \AppBundle\Testablesession;
 
 class Pdftk {
 	
@@ -28,7 +27,7 @@ class Pdftk {
 	 */
 	public function prepareUploadedFile($file) 
 	{
-		$session = new Session();
+	    $session = new Testablesession();
 		$session->set('pdf_original_filename', $file->getClientOriginalName());
 		$session->set('pdf_shorten_filename', 
 			$this->_shortenFileName($file->getClientOriginalName()));
@@ -61,9 +60,9 @@ class Pdftk {
 	 */
 	public function processFile()
 	{
+	    $session = new Testablesession();
+	    var_dump($session);exit();
 	    
-	    $session = new Session();
-		
 		$pdfFile = $this->_dirPdf.
 			$session->get('pdf_unique_id').'/file.pdf';
 		$dataFile = $this->_dirPdf.
@@ -142,7 +141,7 @@ class Pdftk {
 	public function extractPage($page)
 	{
 		$fs = new Filesystem();
-		$session = new Session();
+		$session = new Testablesession();
 		
 		$pdfFileName = $this->_dirPdf.
 			$session->get('pdf_unique_id').'/file.pdf';
@@ -177,7 +176,7 @@ class Pdftk {
 	 */
 	public function getScreenshot($page)
 	{
-		$session = new Session();
+	    $session = new Testablesession();
 	
 		$scrFileName = $this->_dirScr.$session->get('pdf_unique_id').
 			'/page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.jpg';
@@ -206,7 +205,7 @@ class Pdftk {
 	 */
 	public function download()
 	{
-		$session = new Session();
+	    $session = new Testablesession();
 		$fs = new Filesystem();
 		
 		$pdfFileName = $this->_dirPdf.
@@ -232,7 +231,7 @@ class Pdftk {
 	 */
 	public function delete($page)
 	{
-		$session = new Session();
+	    $session = new Testablesession();
 		
 		$pdfFileName = $this->_dirPdf.
 			$session->get('pdf_unique_id').'/file.pdf';
@@ -270,7 +269,7 @@ class Pdftk {
 	 */
 	public function move($direction, $page)
 	{
-	    $session = new Session();
+	    $session = new Testablesession();
 	    
 	    $pdfFileName = $this->_dirPdf.
             $session->get('pdf_unique_id').'/file.pdf';
