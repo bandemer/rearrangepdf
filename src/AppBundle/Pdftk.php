@@ -19,6 +19,12 @@ class Pdftk {
      */
     private $_dirScr = 'screenshots/';
 
+    /**
+     * Base URL for page screenshots
+     * @var string
+     */
+    private $urlScr = 'screenshots/';
+
     public function __construct()
     {
         $basePath = str_replace('src/AppBundle/Pdftk.php', '', __FILE__);
@@ -46,8 +52,10 @@ class Pdftk {
         $fs = new Filesystem();
 
         try {
-            $fs->mkdir($this->_dirScr. $uniqueId);
-            $fs->mkdir($this->_dirPdf, $uniqueId);
+            $fs->mkdir($this->_dirScr.$uniqueId);
+            $fs->mkdir($this->_dirPdf.$uniqueId);
+
+            $file->move($this->_dirPdf.$uniqueId, 'file.pdf');
 
         } catch (\Exception $e) {
             $session->getFlashBag()
@@ -55,10 +63,7 @@ class Pdftk {
                     'angelegt werden!');
             return false;
         }
-
-        $file->move($this->_dirPdf.$uniqueId, 'file.pdf');
-
-        return $this->processFile();
+        return true;
     }
 
     /**
@@ -125,14 +130,14 @@ class Pdftk {
         //Screenshots erzeugen
         for ($i = 1; $i <= $pageCount; $i++) {
 
-            $screenshot = $this->_dirScr.$session->get('pdf_unique_id').
+            $screenshot = $session->get('pdf_unique_id').
                 '/page_'.str_pad($i, 4, '0', STR_PAD_LEFT).'.jpg';
 
             shell_exec('convert -thumbnail 400x -colorspace srgb '.
                 '-background white -flatten '.$pdfFile.'['.($i-1).'] '.
-                $screenshot);
+                $this->_dirScr.$screenshot);
 
-            $pages[$i] = $screenshot;
+            $pages[$i] = $this->urlScr.$screenshot;
         }
 
         $session->set('pdf_pages', $pages);

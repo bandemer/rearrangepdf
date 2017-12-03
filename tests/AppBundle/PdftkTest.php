@@ -4,6 +4,7 @@ namespace Tests\AppBundle;
 
 use AppBundle\Pdftk;
 use AppBundle\Testablesession;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PdftkTest extends \PHPUnit\Framework\TestCase
 {
@@ -77,6 +78,15 @@ class PdftkTest extends \PHPUnit\Framework\TestCase
         foreach ($inAndOut AS $k => $v) {
             $this->assertEquals($v, $method->invokeArgs($pdftk, array($k)));
         }
+    }
+
+    public function testPrepareUploadedFile()
+    {
+        $ufile = new UploadedFile('tests/test.pdf', 'test.pdf');
+
+        $pdftk = new Pdftk();
+        $this->assertTrue($pdftk->prepareUploadedFile($ufile));
+
     }
 
     /**
