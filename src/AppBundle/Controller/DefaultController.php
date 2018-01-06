@@ -43,7 +43,7 @@ class DefaultController extends Controller
             }
 
             if ($check) {
-                return $this->redirectToRoute('show');
+                return $this->redirectToRoute('process');
             } else {
                 return $this->redirectToRoute('index');
             }
@@ -60,8 +60,6 @@ class DefaultController extends Controller
     public function showAction()
     {
         $session = new Testablesession();
-        $pdftk = new Pdftk();
-        $pdftk->processFile();
 
         return $this->render('default/show.html.twig', array(
             'pdf_unique_id' => $session->get('pdf_unique_id'),
@@ -70,6 +68,18 @@ class DefaultController extends Controller
             'pdf_filesize' => $session->get('pdf_filesize'),
             'pdf_pages' => $session->get('pdf_pages'),
         ));
+    }
+
+    /**
+     * @Route("/process/", name="process")
+     */
+    public function processAction()
+    {
+        $session = new Testablesession();
+        $pdftk = new Pdftk();
+        $pdftk->processFile();
+
+        return $this->redirectToRoute('show');
     }
 
     /**

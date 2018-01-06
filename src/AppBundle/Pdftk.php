@@ -355,11 +355,9 @@ class Pdftk {
             '/file.pdf verbose';
 
         $shell_output = shell_exec($command);
-        dump($command);
 
         $fs->remove($this->_dirPdf.$session->get('pdf_unique_id').
             '/file.bac.pdf');
-
 
         return $this->processFile();
     }

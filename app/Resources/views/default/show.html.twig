@@ -6,7 +6,7 @@
             
     <div class="row">
         
-        <div class="col-sm-9">
+        <div class="col-lg-8">
         
             <h1>Übersicht Seiten</h1>
             
@@ -34,17 +34,26 @@
             <div class="card">
                 <div class="card-header">
                     <h3 class="float-left">Seite {{ loop.index }}</h3>
-                    <div class="btn-group float-right" role="group" aria-label="Aktionen für Seite {{ loop.index }}">
-                        <a href="/extract/{{ loop.index }}" class="btn btn-secondary"><i class="fa fa-file-pdf-o"></i> Extrahieren</a>
-                        <a href="/screenshot/{{ loop.index }}" class="btn btn-secondary"><i class="fa fa-file-image-o"></i> Screenshot</a>
-                        <a href="/moveup/{{ loop.index }}" class="btn btn-secondary {% if loop.index == 1 %}disabled{% endif %}"><i class="fa fa-arrow-up"></i> Nach oben</a>
-                        <a href="/movedown/{{ loop.index }}" class="btn btn-secondary {% if loop.index == pdf_pages|length %}disabled{% endif %}"><i class="fa fa-arrow-down"></i> Nach unten</a>
-                        <a href="/delete/{{ loop.index }}" class="btn btn-secondary {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('Wollen Sie die Seite {{ loop.index }} wirklich löschen?');"><i class="fa fa-trash"></i> Löschen</a>
-                    </div>
+                    
+  
+<div class="btn-group float-right" role="group">
+    <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Aktionen
+    </button>
+    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+        <a href="/extract/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-pdf-o"></i> Extrahieren</a>
+        <a href="/screenshot/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-image-o"></i> Screenshot</a>
+        <a href="/moveup/{{ loop.index }}" class="dropdown-item {% if loop.index == 1 %}disabled{% endif %}"><i class="fa fa-arrow-up"></i> Nach oben</a>
+        <a href="/movedown/{{ loop.index }}" class="dropdown-item {% if loop.index == pdf_pages|length %}disabled{% endif %}"><i class="fa fa-arrow-down"></i> Nach unten</a>
+        <a href="/delete/{{ loop.index }}" class="dropdown-item {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('Wollen Sie die Seite {{ loop.index }} wirklich löschen?');"><i class="fa fa-trash"></i> Löschen</a>
+    </div>  
+</div>
+                    
+                    
                 </div>
                 <div class="card-block">
-                    <div class="screenshot">
-                        <img src="/{{ page }}" alt="Page {{ loop.index }}">
+                    <div class="m-3 text-center">
+                        <img src="/{{ page }}" alt="Page {{ loop.index }}" class="border border-1">
                     </div>
                 </div>                
             </div>
@@ -53,7 +62,7 @@
              
        
         </div>
-        <div class="col-sm-3">
+        <div class="col-lg-4">
         	<div class="sticky-top">
         
 	            <h2>Infos zur Datei</h2>

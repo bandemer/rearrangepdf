@@ -1,20 +1,14 @@
 @CHARSET "UTF-8";
 .container {
-	padding-top:1rem;
+    padding-top:1rem;
 }
 .card {
-	margin-top:1rem;
+    margin-top:1rem;
 }
 .download {
-	padding:1rem;	
+    padding:1rem;
 }
 .label {
-	display:block;
-	width:8rem;
+    width:8rem;
 }
-.screenshot {
-	margin-top:1rem;
-}
-.screenshot img {
-	border:1px solid #E0E0E0;
-}
+
