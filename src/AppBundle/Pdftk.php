@@ -25,9 +25,10 @@ class Pdftk {
      */
     private $urlScr = 'screenshots/';
 
+
     public function __construct()
     {
-        $basePath = str_replace('src/AppBundle/Pdftk.php', '', __FILE__);
+        $basePath = __DIR__.'/../../';
         $this->_dirPdf = $basePath.'var/pdf/';
         $this->_dirScr = $basePath.'web/screenshots/';
     }
@@ -46,9 +47,10 @@ class Pdftk {
         $session->set('pdf_shorten_filename',
             $this->_shortenFileName($file->getClientOriginalName()));
 
-        $uniqueId = date('Ymdhis').'_'.uniqid();
+        $uniqueId = date('YmdHis').'_'.uniqid();
 
         $session->set('pdf_unique_id', $uniqueId);
+        $session->save();
 
         $fs = new Filesystem();
 
@@ -112,6 +114,7 @@ class Pdftk {
         //Dateigröße ermitteln
         $fileSize = $this->_readableFileSize(filesize($pdfFile));
         $session->set('pdf_filesize', $fileSize);
+        $session->save();
 
         //Anzahl der Seiten ermitteln
         shell_exec('pdftk '.$pdfFile.' dump_data_utf8 output '.$dataFile);
@@ -124,6 +127,9 @@ class Pdftk {
                 $pageCount = (int) preg_replace($pageCountPattern, "\\1", $row);
                 break;
             }
+        }
+        if ($pageCount == 0) {
+            return false;
         }
 
         $pages = array();
@@ -142,6 +148,7 @@ class Pdftk {
         }
 
         $session->set('pdf_pages', $pages);
+        $session->save();
 
         return true;
     }

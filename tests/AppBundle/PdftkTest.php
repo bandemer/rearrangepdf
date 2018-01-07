@@ -80,12 +80,13 @@ class PdftkTest extends \PHPUnit\Framework\TestCase
         }
     }
 
-    /*
-     * Test for PrepareUploadedFile
+    /**
+     * Test for prepareUploadedFile
      */
     public function testPrepareUploadedFile()
     {
-        $ufile = $this->getMockBuilder('Symfony\Component\HttpFoundation\File\UploadedFile')
+        $ufile = $this->getMockBuilder(
+            'Symfony\Component\HttpFoundation\File\UploadedFile')
             ->enableOriginalConstructor()
             ->setConstructorArgs(['tests/test.pdf', 'test.pdf'])
             ->getMock();
@@ -93,29 +94,36 @@ class PdftkTest extends \PHPUnit\Framework\TestCase
         $pdftk = new Pdftk();
 
         $this->assertTrue($pdftk->prepareUploadedFile($ufile));
-
     }
 
     /**
-     *
+     * Test for processFile
+     */
     public function testProcessFile()
     {
-        $uniqueId = date('YmdHis').'_test';
-        mkdir('var/pdf/'.$uniqueId);
-        copy('tests/test.pdf', 'var/pdf/'.$uniqueId.'/file.pdf');
-
         $session = new Testablesession();
-        $session->start();
-        $session->set('pdf_unique_id', $uniqueId);
-        $session->save();
+
+        $ufile = $this->getMockBuilder(
+            'Symfony\Component\HttpFoundation\File\UploadedFile')
+            ->enableOriginalConstructor()
+            ->setConstructorArgs(['tests/test.pdf', 'test.pdf'])
+            ->getMock();
 
         $pdftk = new Pdftk();
-        $this->assertTrue($pdftk->processFile(), 'Fehler! Datei wurde nicht korrekt verarbeitet');
+        $pdftk->prepareUploadedFile($ufile);
+
+        //manually copy test pdf
+        copy(__DIR__.'/../test.pdf', __DIR__.'/../../var/pdf/'.
+            $session->get('pdf_unique_id').'/file.pdf');
+
+        $this->assertTrue($pdftk->processFile(),
+            'Fehler! Datei wurde nicht korrekt verarbeitet');
+
+        $this->assertEquals('403,33 KBytes',
+            $session->get('pdf_filesize'),
+            'Dateigröße stimmt nicht überein!');
+
+        $this->assertCount(3, $session->get('pdf_pages'));
     }
-
-
-  */
-
-
 
 }
