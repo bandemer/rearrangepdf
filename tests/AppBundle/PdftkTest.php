@@ -85,6 +85,8 @@ class PdftkTest extends \PHPUnit\Framework\TestCase
      */
     public function testPrepareUploadedFile()
     {
+        $session = new Testablesession();
+
         $ufile = $this->getMockBuilder(
             'Symfony\Component\HttpFoundation\File\UploadedFile')
             ->enableOriginalConstructor()
@@ -94,6 +96,12 @@ class PdftkTest extends \PHPUnit\Framework\TestCase
         $pdftk = new Pdftk();
 
         $this->assertTrue($pdftk->prepareUploadedFile($ufile));
+
+        //$this->assertEquals('test.pdf', $session->get('pdf_original_filename'),
+        //    'Fehler: '.var_export($session, true));
+
+        //$this->assertEquals('test.pdf', $session->get('pdf_shorten_filename'));
+        $this->assertStringStartsWith('2018', $session->get('pdf_unique_id'));
     }
 
     /**
@@ -124,9 +132,10 @@ class PdftkTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('403,33 KBytes',
             $session->get('pdf_filesize'),
             'Dateigröße stimmt nicht überein! '.
-            var_export($session->get('pdf_unique_id'), true));
+            var_export($session, true));
 
         $this->assertCount(3, $session->get('pdf_pages'));
     }
+
 
 }
