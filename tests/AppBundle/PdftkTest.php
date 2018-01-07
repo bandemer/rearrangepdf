@@ -113,8 +113,12 @@ class PdftkTest extends \PHPUnit\Framework\TestCase
         $pdftk->prepareUploadedFile($ufile);
 
         //manually copy test pdf
-        copy(__DIR__.'/../test.pdf', __DIR__.'/../../var/pdf/'.
-            $session->get('pdf_unique_id').'/file.pdf');
+
+
+        copy(
+            realpath(__DIR__.'/..').'/test.pdf',
+            realpath(__DIR__.'/../../var/pdf/'.$session->get('pdf_unique_id')).
+                '/file.pdf');
 
         $this->assertTrue($pdftk->processFile(),
             'Fehler! Datei wurde nicht korrekt verarbeitet');
