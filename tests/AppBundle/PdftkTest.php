@@ -124,9 +124,7 @@ class PdftkTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals('403,33 KBytes',
             $session->get('pdf_filesize'),
             'Dateigröße stimmt nicht überein! '.
-            var_export(file_exists(
-                realpath(__DIR__.'/../../var/pdf/'.$session->get('pdf_unique_id')).
-                '/file.pdf'), true));
+            var_export($session->get('pdf_unique_id'), true));
 
         $this->assertCount(3, $session->get('pdf_pages'));
     }
