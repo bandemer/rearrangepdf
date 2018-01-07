@@ -29,8 +29,8 @@ class Pdftk {
     public function __construct()
     {
         $basePath = __DIR__.'/../../';
-        $this->_dirPdf = $basePath.'var/pdf/';
-        $this->_dirScr = $basePath.'web/screenshots/';
+        $this->_dirPdf = realpath($basePath.'var/pdf/').'/';
+        $this->_dirScr = realpath($basePath.'web/screenshots/').'/';
     }
 
     /**
