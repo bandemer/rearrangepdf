@@ -80,11 +80,18 @@ class PdftkTest extends \PHPUnit\Framework\TestCase
         }
     }
 
+    /*
+     * Test for PrepareUploadedFile
+     */
     public function testPrepareUploadedFile()
     {
-        $ufile = new UploadedFile('tests/test.pdf', 'test.pdf');
+        $ufile = $this->getMockBuilder('Symfony\Component\HttpFoundation\File\UploadedFile')
+            ->enableOriginalConstructor()
+            ->setConstructorArgs(['tests/test.pdf', 'test.pdf'])
+            ->getMock();
 
         $pdftk = new Pdftk();
+
         $this->assertTrue($pdftk->prepareUploadedFile($ufile));
 
     }

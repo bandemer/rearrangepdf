@@ -41,6 +41,7 @@ class Pdftk {
     public function prepareUploadedFile($file)
     {
         $session = new Testablesession();
+
         $session->set('pdf_original_filename', $file->getClientOriginalName());
         $session->set('pdf_shorten_filename',
             $this->_shortenFileName($file->getClientOriginalName()));
