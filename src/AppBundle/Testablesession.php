@@ -10,7 +10,8 @@ class Testablesession extends Session {
     {
         //Detect if phpunit is running
         if (php_sapi_name() == "cli") {
-            parent::__construct(new MockFileSessionStorage());
+            $savePath = realpath(__DIR__.'/../../var/sessions/');
+            parent::__construct(new MockFileSessionStorage($savePath));
             $this->setId('testsession');
         } else {
             parent::__construct();
