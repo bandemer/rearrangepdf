@@ -69,6 +69,8 @@ class DefaultController extends AbstractController
     }
 
     /**
+     * Split PDF into Pages
+     *
      * @Route("/process/", name="process")
      */
     public function processAction(SessionInterface $session)
@@ -81,9 +83,11 @@ class DefaultController extends AbstractController
     }
 
     /**
+     * Download single page as PDF
+     *
      * @Route("/extract/{page}", name="extract")
      */
-    public function extractAction($page, SessionInterface $session)
+    public function extractAction(int $page, SessionInterface $session)
     {
         $page = intval($page);
 
@@ -97,9 +101,11 @@ class DefaultController extends AbstractController
     }
 
     /**
+     * Download single page as JPG-Image
+     *
      * @Route("/screenshot/{page}", name="screenshot")
      */
-    public function screenshotAction($page, SessionInterface $session)
+    public function screenshotAction(int $page, SessionInterface $session)
     {
         $page = intval($page);
 
@@ -115,7 +121,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/move{direction}/{page}", name="move")
      */
-    public function moveAction($direction, $page, SessionInterface $session)
+    public function moveAction($direction, int $page, SessionInterface $session)
     {
         $page = intval($page);
 

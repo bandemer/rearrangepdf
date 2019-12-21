@@ -4,6 +4,7 @@ namespace App;
 
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Pdftk {
 
@@ -43,7 +44,7 @@ class Pdftk {
      * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
      * @return bool
      */
-    public function prepareUploadedFile($file)
+    public function prepareUploadedFile(UploadedFile $file)
     {
         $this->session->set('pdf_original_filename', $file->getClientOriginalName());
         $this->session->set('pdf_shorten_filename',
@@ -63,7 +64,7 @@ class Pdftk {
             $file->move($this->_dirPdf.$uniqueId, 'file.pdf');
 
         } catch (\Exception $e) {
-            var_dump($e->getMessage()); exit;
+
             $this->session->getFlashBag()->add('error', 'Fehler: Verzeichnisse konnten nicht angelegt werden!');
             return false;
         }
@@ -74,7 +75,7 @@ class Pdftk {
      * process a pdf file
      * @return boolean
      */
-    public function processFile()
+    public function processFile() : bool
     {
         $pdfFile = $this->_dirPdf.
             $this->session->get('pdf_unique_id').'/file.pdf';
@@ -159,7 +160,7 @@ class Pdftk {
      *
      * @param int $page
      */
-    public function extractPage($page)
+    public function extractPage(int $page)
     {
         $fs = new Filesystem();
 
@@ -194,7 +195,7 @@ class Pdftk {
      *
      * @param int $page
      */
-    public function getScreenshot($page)
+    public function getScreenshot(int $page)
     {
         $scrFileName = $this->_dirScr.$this->session->get('pdf_unique_id').
             '/page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.jpg';
@@ -246,7 +247,7 @@ class Pdftk {
      *
      * @param int $page
      */
-    public function delete($page)
+    public function delete(int $page)
     {
         $pdfFileName = $this->_dirPdf.
             $this->session->get('pdf_unique_id').'/file.pdf';
@@ -282,8 +283,12 @@ class Pdftk {
      * @param string $direction
      * @param int $page
      */
-    public function move($direction, $page)
+    public function move(string $direction, int $page)
     {
+        $possibleDirections = ['up', 'down'];
+        if(!in_array($direction, $possibleDirections)) {
+            throw new \Exception('Direction must be one of "up" or "down"');
+        }
 
         $pdfFileName = $this->_dirPdf.
             $this->session->get('pdf_unique_id').'/file.pdf';
@@ -370,7 +375,7 @@ class Pdftk {
      * @param int $bytes
      * @return string
      */
-    private function _readableFileSize($bytes)
+    private function _readableFileSize(int $bytes)
     {
         $sizes = array('Bytes', 'KBytes', 'MBytes', 'GBytes');
         $count = 0;
@@ -393,7 +398,7 @@ class Pdftk {
      * @param string $name
      * @return string $formatted
      */
-    private function _shortenFileName($fileName)
+    private function _shortenFileName(string $fileName)
     {
         $returnString = $fileName;
         if (strlen($fileName) > 30) {
