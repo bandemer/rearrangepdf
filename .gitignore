@@ -3,6 +3,9 @@
 .buildpath
 .project
 
+#PhpStorm
+.idea
+
 # Cache and logs (Symfony2)
 /app/cache/*
 /app/logs/*
@@ -22,11 +25,10 @@
 !var/sessions/.gitkeep
 !var/pdf/.gitkeep
 
-# Parameters
-/app/config/parameters.yml
+#Alte Symfony Struktur
+/app
 
 # Managed by Composer
-/app/bootstrap.php.cache
 /var/bootstrap.php.cache
 /bin/*
 !bin/console
@@ -56,3 +58,13 @@ composer.lock
 
 # Backup entities generated with doctrine:generate:entities command
 */Entity/*~
+
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/
+/vendor/
+###< symfony/framework-bundle ###
