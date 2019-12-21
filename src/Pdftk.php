@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle;
+namespace App;
 
 use Symfony\Component\Filesystem\Filesystem;
 use \AppBundle\Testablesession;
