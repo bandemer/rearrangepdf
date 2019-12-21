@@ -7,6 +7,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use App\Pdftk;
 
 class DefaultController extends AbstractController
 {
@@ -14,7 +16,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, SessionInterface $session)
     {
         $form = $this->createFormBuilder()
             ->add('pdf', FileType::class, array('label' => 'Datei'))
@@ -25,8 +27,7 @@ class DefaultController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
-            $session = new Testablesession();
-            $pdftk = new Pdftk();
+            $pdftk = new Pdftk($session);
 
             $check = false;
 
@@ -55,9 +56,8 @@ class DefaultController extends AbstractController
     /**
      * @Route("/show/", name="show")
      */
-    public function showAction()
+    public function showAction(SessionInterface $session)
     {
-        $session = new Testablesession();
 
         return $this->render('default/show.html.twig', array(
             'pdf_unique_id' => $session->get('pdf_unique_id'),
@@ -71,10 +71,10 @@ class DefaultController extends AbstractController
     /**
      * @Route("/process/", name="process")
      */
-    public function processAction()
+    public function processAction(SessionInterface $session)
     {
-        $session = new Testablesession();
-        $pdftk = new Pdftk();
+
+        $pdftk = new Pdftk($session);
         $pdftk->processFile();
 
         return $this->redirectToRoute('show');
@@ -83,13 +83,12 @@ class DefaultController extends AbstractController
     /**
      * @Route("/extract/{page}", name="extract")
      */
-    public function extractAction($page)
+    public function extractAction($page, SessionInterface $session)
     {
-        $session = new Testablesession();
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
-            $pdftk = new Pdftk();
+            $pdftk = new Pdftk($session);
             $pdftk->extractPage($page);
         }
         $session->getFlashBag()->add(
@@ -100,13 +99,12 @@ class DefaultController extends AbstractController
     /**
      * @Route("/screenshot/{page}", name="screenshot")
      */
-    public function screenshotAction($page)
+    public function screenshotAction($page, SessionInterface $session)
     {
-        $session = new Testablesession();
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
-            $pdftk = new Pdftk();
+            $pdftk = new Pdftk($session);
             $pdftk->getScreenshot($page);
         }
         $session->getFlashBag()->add(
@@ -117,14 +115,13 @@ class DefaultController extends AbstractController
     /**
      * @Route("/move{direction}/{page}", name="move")
      */
-    public function moveAction($direction, $page)
+    public function moveAction($direction, $page, SessionInterface $session)
     {
-        $session = new Testablesession();
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
 
-            $pdftk = new Pdftk();
+            $pdftk = new Pdftk($session);
             $pdftk->move($direction, $page);
 
             $session->getFlashBag()->add(
@@ -135,17 +132,15 @@ class DefaultController extends AbstractController
         return $this->redirectToRoute('show');
     }
 
-
     /**
      * @Route("/delete/{page}", name="delete")
      */
-    public function deleteAction($page)
+    public function deleteAction($page, SessionInterface $session)
     {
-        $session = new Testablesession();
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
-            $pdftk = new Pdftk();
+            $pdftk = new Pdftk($session);
 
             if ($pdftk->delete($page)) {
                 $session->getFlashBag()->add(
@@ -167,9 +162,9 @@ class DefaultController extends AbstractController
     /**
      * @Route("/download/", name="download")
      */
-    public function downloadAction()
+    public function downloadAction(SessionInterface $session)
     {
-        $pdftk = new Pdftk();
+        $pdftk = new Pdftk($session);
         if (!$pdftk->download()) {
             $session->getFlashBag()->add(
                 'error', 'Fehler: Download konnte nicht gestartet werden!');

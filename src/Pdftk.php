@@ -3,7 +3,7 @@
 namespace App;
 
 use Symfony\Component\Filesystem\Filesystem;
-use \AppBundle\Testablesession;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Pdftk {
 
@@ -25,12 +25,16 @@ class Pdftk {
      */
     private $urlScr = 'screenshots/';
 
+    private $session;
 
-    public function __construct()
+    public function __construct(SessionInterface $session)
     {
-        $basePath = __DIR__.'/../../';
+        $this->session = $session;
+
+        $basePath = __DIR__.'/../';
+
         $this->_dirPdf = realpath($basePath.'var/pdf/').'/';
-        $this->_dirScr = realpath($basePath.'web/screenshots/').'/';
+        $this->_dirScr = realpath($basePath.'public/screenshots/').'/';
     }
 
     /**
@@ -41,16 +45,14 @@ class Pdftk {
      */
     public function prepareUploadedFile($file)
     {
-        $session = new Testablesession();
-
-        $session->set('pdf_original_filename', $file->getClientOriginalName());
-        $session->set('pdf_shorten_filename',
+        $this->session->set('pdf_original_filename', $file->getClientOriginalName());
+        $this->session->set('pdf_shorten_filename',
             $this->_shortenFileName($file->getClientOriginalName()));
 
         $uniqueId = date('YmdHis').'_'.uniqid();
 
-        $session->set('pdf_unique_id', $uniqueId);
-        $session->save();
+        $this->session->set('pdf_unique_id', $uniqueId);
+        $this->session->save();
 
         $fs = new Filesystem();
 
@@ -61,9 +63,8 @@ class Pdftk {
             $file->move($this->_dirPdf.$uniqueId, 'file.pdf');
 
         } catch (\Exception $e) {
-            $session->getFlashBag()
-                ->add('error', 'Fehler: Verzeichnisse konnten nicht '.
-                    'angelegt werden!');
+            var_dump($e->getMessage()); exit;
+            $this->session->getFlashBag()->add('error', 'Fehler: Verzeichnisse konnten nicht angelegt werden!');
             return false;
         }
         return true;
@@ -75,24 +76,22 @@ class Pdftk {
      */
     public function processFile()
     {
-        $session = new Testablesession();
-
         $pdfFile = $this->_dirPdf.
-            $session->get('pdf_unique_id').'/file.pdf';
+            $this->session->get('pdf_unique_id').'/file.pdf';
 
         $dataFile = $this->_dirPdf.
-            $session->get('pdf_unique_id').'/file_data.txt';
+            $this->session->get('pdf_unique_id').'/file_data.txt';
 
         //Check if PDF
         if (substr(file_get_contents($pdfFile), 0, 4) != '%PDF') {
-            $session->getFlashBag()
+            $this->session->getFlashBag()
                 ->add('error', 'Fehler: Kein gültiges PDF-Dokument!');
             return false;
         }
 
         //delete screenshots and page pdf, if pages exist
-        if (is_array($session->get('pdf_pages'))) {
-            $pages = $session->get('pdf_pages');
+        if (is_array($this->session->get('pdf_pages'))) {
+            $pages = $this->session->get('pdf_pages');
             $fs = new Filesystem();
 
             foreach ($pages AS $pk => $pv) {
@@ -103,7 +102,7 @@ class Pdftk {
                 }
 
                 //delete PDF page
-                $pageFile = $this->_dirPdf.$session->get('pdf_unique_id').
+                $pageFile = $this->_dirPdf.$this->session->get('pdf_unique_id').
                     '/file_page_'.str_pad($pk, 4, '0', STR_PAD_LEFT).'.pdf';
                 if ($fs->exists($pageFile)) {
                     $fs->remove($pageFile);
@@ -113,8 +112,8 @@ class Pdftk {
 
         //Dateigröße ermitteln
         $fileSize = $this->_readableFileSize(filesize($pdfFile));
-        $session->set('pdf_filesize', $fileSize);
-        $session->save();
+        $this->session->set('pdf_filesize', $fileSize);
+        $this->session->save();
 
         //Anzahl der Seiten ermitteln
         shell_exec('pdftk '.$pdfFile.' dump_data_utf8 output '.$dataFile);
@@ -137,7 +136,7 @@ class Pdftk {
         //Screenshots erzeugen
         for ($i = 1; $i <= $pageCount; $i++) {
 
-            $screenshot = $session->get('pdf_unique_id').
+            $screenshot = $this->session->get('pdf_unique_id').
                 '/page_'.str_pad($i, 4, '0', STR_PAD_LEFT).'.jpg';
 
             $command = 'convert -thumbnail 400x -colorspace srgb '.
@@ -145,11 +144,12 @@ class Pdftk {
                 $this->_dirScr.$screenshot;
             shell_exec($command);
 
+
             $pages[$i] = $this->urlScr.$screenshot;
         }
 
-        $session->set('pdf_pages', $pages);
-        $session->save();
+        $this->session->set('pdf_pages', $pages);
+        $this->session->save();
 
         return true;
     }
@@ -162,24 +162,23 @@ class Pdftk {
     public function extractPage($page)
     {
         $fs = new Filesystem();
-        $session = new Testablesession();
 
         $pdfFileName = $this->_dirPdf.
-            $session->get('pdf_unique_id').'/file.pdf';
+            $this->session->get('pdf_unique_id').'/file.pdf';
 
-        $pageFileName = $this->_dirPdf.$session->get('pdf_unique_id').
+        $pageFileName = $this->_dirPdf.$this->session->get('pdf_unique_id').
             '/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf';
 
         if (!$fs->exists($pageFileName)) {
 
             shell_exec('pdftk '.$pdfFileName.' burst output '.
-                $this->_dirPdf.$session->get('pdf_unique_id').
+                $this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_%04d.pdf');
         }
 
         $downloadFileName = str_replace('.pdf', '_seite_'.
             str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf',
-            $session->get('pdf_original_filename'));
+            $this->session->get('pdf_original_filename'));
 
         $output = file_get_contents($pageFileName);
 
@@ -197,9 +196,7 @@ class Pdftk {
      */
     public function getScreenshot($page)
     {
-        $session = new Testablesession();
-
-        $scrFileName = $this->_dirScr.$session->get('pdf_unique_id').
+        $scrFileName = $this->_dirScr.$this->session->get('pdf_unique_id').
             '/page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.jpg';
 
         $fs = new Filesystem();
@@ -208,7 +205,7 @@ class Pdftk {
 
             $downloadFileName = str_replace('.pdf', '_seite_'.
                 str_pad($page, 4, '0', STR_PAD_LEFT).'.jpg',
-                $session->get('pdf_original_filename'));
+                $this->session->get('pdf_original_filename'));
 
             $output = file_get_contents($scrFileName);
 
@@ -226,11 +223,10 @@ class Pdftk {
      */
     public function download()
     {
-        $session = new Testablesession();
         $fs = new Filesystem();
 
         $pdfFileName = $this->_dirPdf.
-            $session->get('pdf_unique_id').'/file.pdf';
+            $this->session->get('pdf_unique_id').'/file.pdf';
 
         if ($fs->exists($pdfFileName)) {
 
@@ -238,7 +234,7 @@ class Pdftk {
 
             header('Content-type: application/octet-stream');
             header('Content-Disposition: attachment; filename="'.
-                    $session->get('pdf_original_filename').'"');
+                    $this->session->get('pdf_original_filename').'"');
             echo($output);
             exit;
         }
@@ -252,17 +248,15 @@ class Pdftk {
      */
     public function delete($page)
     {
-        $session = new Testablesession();
-
         $pdfFileName = $this->_dirPdf.
-            $session->get('pdf_unique_id').'/file.pdf';
+            $this->session->get('pdf_unique_id').'/file.pdf';
 
         //make a backup of file
         $fs = new Filesystem();
         $fs->copy($pdfFileName, str_replace('.pdf', '.bac.pdf', $pdfFileName));
 
         //delete page
-        $pages = $session->get('pdf_pages');
+        $pages = $this->session->get('pdf_pages');
         $option = '';
         if ($page == 1) {
             $option = '2-end';
@@ -290,10 +284,9 @@ class Pdftk {
      */
     public function move($direction, $page)
     {
-        $session = new Testablesession();
 
         $pdfFileName = $this->_dirPdf.
-            $session->get('pdf_unique_id').'/file.pdf';
+            $this->session->get('pdf_unique_id').'/file.pdf';
 
         //make a backup of file
         $fs = new Filesystem();
@@ -301,10 +294,10 @@ class Pdftk {
 
         //Burst, if pdf-pages not yet exist
         $doBurst = false;
-        if (is_array($session->get('pdf_pages'))) {
+        if (is_array($this->session->get('pdf_pages'))) {
 
-            foreach ($session->get('pdf_pages') AS $pk => $pv) {
-                if ($fs->exists($this->_dirPdf.$session->get('pdf_unique_id').'file_page_'.
+            foreach ($this->session->get('pdf_pages') AS $pk => $pv) {
+                if ($fs->exists($this->_dirPdf.$this->session->get('pdf_unique_id').'file_page_'.
                     str_pad($pk, 4, '0', STR_PAD_LEFT).'.pdf') == false) {
                     $doBurst = true;
                     break;
@@ -315,57 +308,57 @@ class Pdftk {
         }
         if ($doBurst) {
            $shell_output = shell_exec('pdftk '.$pdfFileName.' burst output '.
-                $this->_dirPdf.$session->get('pdf_unique_id').
+                $this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_%04d.pdf verbose');
         }
-        $pages = $session->get('pdf_pages');
+        $pages = $this->session->get('pdf_pages');
 
         //Rename
         if ($direction == 'up' AND $page > 1) {
 
-            $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+            $fs->rename($this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page-1, 4, '0', STR_PAD_LEFT).'.pdf',
-                $this->_dirPdf.$session->get('pdf_unique_id').
+                $this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page-1, 4, '0', STR_PAD_LEFT).'.pdf.bac');
-            $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+            $fs->rename($this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf',
-                $this->_dirPdf.$session->get('pdf_unique_id').
+                $this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page-1, 4, '0', STR_PAD_LEFT).'.pdf');
-            $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+            $fs->rename($this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page-1, 4, '0', STR_PAD_LEFT).'.pdf.bac',
-                $this->_dirPdf.$session->get('pdf_unique_id').
+                $this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf');
 
         } elseif ($direction == 'down' AND $page < (count($pages))) {
 
-            $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+            $fs->rename($this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page+1, 4, '0', STR_PAD_LEFT).'.pdf',
-                $this->_dirPdf.$session->get('pdf_unique_id').
+                $this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page+1, 4, '0', STR_PAD_LEFT).'.pdf.bac');
-            $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+            $fs->rename($this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf',
-                $this->_dirPdf.$session->get('pdf_unique_id').
+                $this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page+1, 4, '0', STR_PAD_LEFT).'.pdf');
-            $fs->rename($this->_dirPdf.$session->get('pdf_unique_id').
+            $fs->rename($this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page+1, 4, '0', STR_PAD_LEFT).'.pdf.bac',
-                $this->_dirPdf.$session->get('pdf_unique_id').
+                $this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf');
 
         }
 
         //Join
         $command = 'pdftk ';
-        foreach ($session->get('pdf_pages') AS $pk => $pv) {
-            $command .= $this->_dirPdf.$session->get('pdf_unique_id').'/file_page_'.
+        foreach ($this->session->get('pdf_pages') AS $pk => $pv) {
+            $command .= $this->_dirPdf.$this->session->get('pdf_unique_id').'/file_page_'.
                 str_pad($pk, 4, '0', STR_PAD_LEFT).'.pdf ';
         }
         $command .= 'cat output '.
-            $this->_dirPdf.$session->get('pdf_unique_id').
+            $this->_dirPdf.$this->session->get('pdf_unique_id').
             '/file.pdf verbose';
 
         $shell_output = shell_exec($command);
 
-        $fs->remove($this->_dirPdf.$session->get('pdf_unique_id').
+        $fs->remove($this->_dirPdf.$this->session->get('pdf_unique_id').
             '/file.bac.pdf');
 
         return $this->processFile();
