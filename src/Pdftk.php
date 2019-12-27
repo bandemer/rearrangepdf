@@ -39,6 +39,31 @@ class Pdftk {
     }
 
     /**
+     * Requirements imageMagick and PDFTK
+     */
+    public function checkRequirements() : array
+    {
+        $errors = [];
+
+        //Check for ImageMagick Version 6
+        $command = 'convert --version';
+        $output = shell_exec($command);
+        if (!preg_match('/Version: ImageMagick 6\./', $output)) {
+            $errors[] = 'ImageMagick Version 6 is required';
+        }
+
+        //Check for PDFTK Verision 2
+        $command = 'pdftk --version';
+        $output = shell_exec($command);
+        if (!preg_match('/pdftk 2\./', $output)) {
+            $errors[] = 'PDFTK Version 2 is required';
+        }
+
+        return $errors;
+    }
+
+
+    /**
      * Prepare uploaded file
      *
      * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file

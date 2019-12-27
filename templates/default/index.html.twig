@@ -2,10 +2,27 @@
 
 {% block body %}
 
-<div class="container">
-	
-	<div class="jumbotron">            
-	    <h1>Upload PDF-File</h1>
+<div class="container my-lg-5">
+
+	<div class="d-flex justify-content-between">
+		<h1 class="h2">RearrangePDF</h1>
+		<a href="https://github.com/bandemer/rearrangepdf" class="btn btn-secondary py-2">View on GitHub</a>
+	</div>
+	<hr>
+
+	{%  if errors %}
+	<div class="alert alert-danger" role="alert">
+		<h2 class="h4">The requirements on the server are not met:</h2>
+		<ul>
+		{% for e in errors %}
+			<li>{{ e }}</li>
+		{% endfor %}
+		</ul>
+	</div>
+	{% else %}
+
+	<div class="jumbotron bg-light border px-lg-5">
+	    <h2 class="h4 my-4">Upload PDF-File</h2>
 	        
 	    {% if app.session.flashBag.has('error') %}
 	    <div class="alert alert-danger" role="alert">
@@ -14,11 +31,12 @@
 	        {% endfor %}
 	    </div>
 	    {% endif %}
-	    
+
 	    {{ form_start(form) }}
 	    {{ form_widget(form) }}
 	    {{ form_end(form) }}
     </div>
+	{% endif %}
         
 </div>
 {% endblock %}

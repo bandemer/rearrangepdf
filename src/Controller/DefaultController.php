@@ -18,6 +18,9 @@ class DefaultController extends AbstractController
      */
     public function indexAction(Request $request, SessionInterface $session)
     {
+        $pdftk = new Pdftk($session);
+        $errors = $pdftk->checkRequirements();
+
         $form = $this->createFormBuilder()
             ->add('pdf', FileType::class, array('label' => 'Datei'))
             ->add('save', SubmitType::class, array('label' => 'Hochladen'))
@@ -26,8 +29,6 @@ class DefaultController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $pdftk = new Pdftk($session);
 
             $check = false;
 
@@ -48,8 +49,10 @@ class DefaultController extends AbstractController
             }
         }
 
+
         return $this->render('default/index.html.twig', array(
             'form' => $form->createView(),
+            'errors' => $errors
         ));
     }
 
