@@ -62,7 +62,6 @@ class Pdftk {
         return $errors;
     }
 
-
     /**
      * Prepare uploaded file
      *
