@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Psr\Log\LoggerInterface;
 use App\Pdftk;
 
 class DefaultController extends AbstractController
@@ -16,9 +17,9 @@ class DefaultController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function indexAction(Request $request, SessionInterface $session)
+    public function indexAction(Request $request, SessionInterface $session, LoggerInterface $logger)
     {
-        $pdftk = new Pdftk($session);
+        $pdftk = new Pdftk($session, $logger);
         $errors = $pdftk->checkRequirements();
 
         $form = $this->createFormBuilder()
@@ -76,10 +77,10 @@ class DefaultController extends AbstractController
      *
      * @Route("/process/", name="process")
      */
-    public function processAction(SessionInterface $session)
+    public function processAction(SessionInterface $session, LoggerInterface $logger)
     {
 
-        $pdftk = new Pdftk($session);
+        $pdftk = new Pdftk($session, $logger);
         $pdftk->processFile();
 
         return $this->redirectToRoute('show');
@@ -90,12 +91,12 @@ class DefaultController extends AbstractController
      *
      * @Route("/extract/{page}", name="extract")
      */
-    public function extractAction(int $page, SessionInterface $session)
+    public function extractAction(int $page, SessionInterface $session, LoggerInterface $logger)
     {
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
-            $pdftk = new Pdftk($session);
+            $pdftk = new Pdftk($session, $logger);
             $pdftk->extractPage($page);
         }
         $session->getFlashBag()->add(
@@ -108,12 +109,12 @@ class DefaultController extends AbstractController
      *
      * @Route("/screenshot/{page}", name="screenshot")
      */
-    public function screenshotAction(int $page, SessionInterface $session)
+    public function screenshotAction(int $page, SessionInterface $session, LoggerInterface $logger)
     {
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
-            $pdftk = new Pdftk($session);
+            $pdftk = new Pdftk($session, $logger);
             $pdftk->getScreenshot($page);
         }
         $session->getFlashBag()->add(
@@ -124,13 +125,13 @@ class DefaultController extends AbstractController
     /**
      * @Route("/move{direction}/{page}", name="move")
      */
-    public function moveAction($direction, int $page, SessionInterface $session)
+    public function moveAction($direction, int $page, SessionInterface $session, LoggerInterface $logger)
     {
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
 
-            $pdftk = new Pdftk($session);
+            $pdftk = new Pdftk($session, $logger);
             $pdftk->move($direction, $page);
 
             $session->getFlashBag()->add(

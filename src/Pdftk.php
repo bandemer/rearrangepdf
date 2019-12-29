@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
@@ -31,18 +32,29 @@ class Pdftk {
      */
     private $session;
 
+
+    private $logger;
+
     /**
      * Pdftk constructor.
      * @param SessionInterface $session
      */
-    public function __construct(SessionInterface $session)
+    public function __construct(SessionInterface $session, LoggerInterface $logger)
     {
         $this->session = $session;
+
+        $this->logger = $logger;
 
         $basePath = __DIR__.'/../';
 
         $this->_dirPdf = realpath($basePath.'var/pdf/').'/';
         $this->_dirScr = realpath($basePath.'public/screenshots/').'/';
+    }
+
+    private function logShellCommand(string $command, string $output)
+    {
+        $this->logger->info('Sent shell command: '.$command);
+        $this->logger->info('Received output: '.$output);
     }
 
     /**
@@ -55,13 +67,16 @@ class Pdftk {
         //Check for ImageMagick Version 6
         $command = 'convert --version';
         $output = shell_exec($command);
+        $this->logShellCommand($command, $output);
         if (!preg_match('/Version: ImageMagick 6\./', $output)) {
             $errors[] = 'ImageMagick Version 6 is required';
         }
 
         //Check for PDFTK Verision 2
         $command = 'pdftk --version';
+        $this->logger->info('Send shell');
         $output = shell_exec($command);
+        $this->logShellCommand($command, $output);
         if (!preg_match('/pdftk 2\./', $output)) {
             $errors[] = 'PDFTK Version 2 is required';
         }
@@ -106,7 +121,9 @@ class Pdftk {
 
         } catch (\Exception $e) {
 
-            $this->session->getFlashBag()->add('error', 'Fehler: Verzeichnisse konnten nicht angelegt werden!');
+            $message = 'Fehler: Verzeichnisse konnten nicht angelegt werden!';
+            $this->session->getFlashBag()->add('error', $message);
+            $this->logger->error($message);
             return false;
         }
         return true;
@@ -126,8 +143,9 @@ class Pdftk {
 
         //Check if PDF
         if (substr(file_get_contents($pdfFile), 0, 4) != '%PDF') {
-            $this->session->getFlashBag()
-                ->add('error', 'Fehler: Kein gültiges PDF-Dokument!');
+            $message = 'Fehler: Kein gültiges PDF-Dokument!';
+            $this->session->getFlashBag()->add('error', $message);
+            $this->logger->error($message);
             return false;
         }
 
@@ -158,7 +176,9 @@ class Pdftk {
         $this->session->save();
 
         //Anzahl der Seiten ermitteln
-        shell_exec('pdftk '.$pdfFile.' dump_data_utf8 output '.$dataFile);
+        $command = 'pdftk '.$pdfFile.' dump_data_utf8 output '.$dataFile.' verbose dont_ask';
+        $output = shell_exec($command);
+        $this->logShellCommand($command, $output);
 
         $data = explode("\n", file_get_contents($dataFile));
         $pageCount = 0;
@@ -184,8 +204,11 @@ class Pdftk {
             $command = 'convert -thumbnail 400x -colorspace srgb '.
                 '-background white -flatten '.$pdfFile.'['.($i-1).'] '.
                 $this->_dirScr.$screenshot;
-            shell_exec($command);
-
+            $output = shell_exec($command);
+            if (is_null($output)) {
+                $output = '';
+            }
+            $this->logShellCommand($command, $output);
 
             $pages[$i] = $this->urlScr.$screenshot;
         }
@@ -213,9 +236,11 @@ class Pdftk {
 
         if (!$fs->exists($pageFileName)) {
 
-            shell_exec('pdftk '.$pdfFileName.' burst output '.
+            $command = 'pdftk '.$pdfFileName.' burst output '.
                 $this->_dirPdf.$this->session->get('pdf_unique_id').
-                '/file_page_%04d.pdf');
+                '/file_page_%04d.pdf verbose dont_ask';
+            $output = shell_exec($command);
+            $this->logShellCommand($command, $output);
         }
 
         $downloadFileName = str_replace('.pdf', '_seite_'.
@@ -307,8 +332,10 @@ class Pdftk {
         } else {
             $option = '1-'.($page-1).' '.($page+1).'-end';
         }
-        shell_exec('pdftk '.$pdfFileName.' cat '.$option.' output '.
-            str_replace('.pdf', '.new.pdf', $pdfFileName));
+        $command = 'pdftk '.$pdfFileName.' cat '.$option.' output '.
+            str_replace('.pdf', '.new.pdf', $pdfFileName).' verbose dont_ask';
+        $output = shell_exec($command);
+        $this->logShellCommand($command, $output);
 
         //remove original file and rename new file
         $fs->remove($pdfFileName);
@@ -353,9 +380,11 @@ class Pdftk {
             $doBurst = true;
         }
         if ($doBurst) {
-           $shell_output = shell_exec('pdftk '.$pdfFileName.' burst output '.
+            $command = 'pdftk '.$pdfFileName.' burst output '.
                 $this->_dirPdf.$this->session->get('pdf_unique_id').
-                '/file_page_%04d.pdf verbose');
+                '/file_page_%04d.pdf verbose dont_ask';
+            $output = shell_exec($command);
+            $this->logShellCommand($command, $output);
         }
         $pages = $this->session->get('pdf_pages');
 
@@ -400,9 +429,10 @@ class Pdftk {
         }
         $command .= 'cat output '.
             $this->_dirPdf.$this->session->get('pdf_unique_id').
-            '/file.pdf verbose';
+            '/file.pdf verbose dont_ask';
 
-        $shell_output = shell_exec($command);
+        $output = shell_exec($command);
+        $this->logShellCommand($command, $output);
 
         $fs->remove($this->_dirPdf.$this->session->get('pdf_unique_id').
             '/file.bac.pdf');
