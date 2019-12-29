@@ -26,8 +26,15 @@ class Pdftk {
      */
     private $urlScr = 'screenshots/';
 
+    /**
+     * @var SessionInterface
+     */
     private $session;
 
+    /**
+     * Pdftk constructor.
+     * @param SessionInterface $session
+     */
     public function __construct(SessionInterface $session)
     {
         $this->session = $session;
@@ -39,7 +46,7 @@ class Pdftk {
     }
 
     /**
-     * Requirements imageMagick and PDFTK
+     * Check requirements on Server
      */
     public function checkRequirements() : array
     {
@@ -57,6 +64,16 @@ class Pdftk {
         $output = shell_exec($command);
         if (!preg_match('/pdftk 2\./', $output)) {
             $errors[] = 'PDFTK Version 2 is required';
+        }
+
+        //check permissions for screenshots directory
+        if(!is_dir($this->_dirScr) OR !is_writable($this->_dirScr)) {
+            $errors[] = 'Directory public/screenshots does not exist or is not writable';
+        }
+
+        //check permissions for PDF directory
+        if (!is_dir($this->_dirPdf) OR !is_writable($this->_dirPdf)) {
+            $errors[] = 'Directory var/pdf does not exist or is not writable';
         }
 
         return $errors;
