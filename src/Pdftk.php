@@ -28,15 +28,20 @@ class Pdftk {
     private $urlScr = 'screenshots/';
 
     /**
+     * Session
      * @var SessionInterface
      */
     private $session;
 
-
+    /**
+     * Logger
+     * @var LoggerInterface
+     */
     private $logger;
 
     /**
-     * Pdftk constructor.
+     * Pdftk constructor
+     *
      * @param SessionInterface $session
      */
     public function __construct(SessionInterface $session, LoggerInterface $logger)
@@ -51,6 +56,12 @@ class Pdftk {
         $this->_dirScr = realpath($basePath.'public/screenshots/').'/';
     }
 
+    /**
+     * Log shell command and returned output
+     *
+     * @param string $command
+     * @param string $output
+     */
     private function logShellCommand(string $command, string $output)
     {
         $this->logger->info('Sent shell command: '.$command);
@@ -418,10 +429,88 @@ class Pdftk {
                 '/file_page_'.str_pad($page+1, 4, '0', STR_PAD_LEFT).'.pdf.bac',
                 $this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf');
-
         }
 
         //Join
+        $command = 'pdftk ';
+        foreach ($this->session->get('pdf_pages') AS $pk => $pv) {
+            $command .= $this->_dirPdf.$this->session->get('pdf_unique_id').'/file_page_'.
+                str_pad($pk, 4, '0', STR_PAD_LEFT).'.pdf ';
+        }
+        $command .= 'cat output '.
+            $this->_dirPdf.$this->session->get('pdf_unique_id').
+            '/file.pdf verbose dont_ask';
+
+        $output = shell_exec($command);
+        $this->logShellCommand($command, $output);
+
+        $fs->remove($this->_dirPdf.$this->session->get('pdf_unique_id').
+            '/file.bac.pdf');
+
+        return $this->processFile();
+    }
+
+    /**
+     * Rotate a page
+     *
+     * @param string $direction
+     * @param int $page
+     */
+    public function rotate(string $direction, int $page)
+    {
+        $possibleDirections = ['east', 'west'];
+        if(!in_array($direction, $possibleDirections)) {
+            throw new \Exception('Direction must be one of "left" or "right"');
+        }
+
+        $pdfFileName = $this->_dirPdf.
+            $this->session->get('pdf_unique_id').'/file.pdf';
+
+        //make a backup of file
+        $fs = new Filesystem();
+        $fs->copy($pdfFileName, str_replace('.pdf', '.bac.pdf', $pdfFileName));
+
+        //Burst, if pdf-pages not yet exist
+        $doBurst = false;
+        if (is_array($this->session->get('pdf_pages'))) {
+
+            foreach ($this->session->get('pdf_pages') AS $pk => $pv) {
+                if ($fs->exists($this->_dirPdf.$this->session->get('pdf_unique_id').'file_page_'.
+                        str_pad($pk, 4, '0', STR_PAD_LEFT).'.pdf') == false) {
+                    $doBurst = true;
+                    break;
+                }
+            }
+        } else {
+            $doBurst = true;
+        }
+        if ($doBurst) {
+            $command = 'pdftk '.$pdfFileName.' burst output '.
+                $this->_dirPdf.$this->session->get('pdf_unique_id').
+                '/file_page_%04d.pdf verbose dont_ask';
+            $output = shell_exec($command);
+            $this->logShellCommand($command, $output);
+        }
+
+
+        //Rotate page
+        $pageFile = $this->_dirPdf.$this->session->get('pdf_unique_id').
+            '/file_page_'.str_pad($page+1, 4, '0', STR_PAD_LEFT).'.pdf';
+
+        $fs->rename($pageFile, $pageFile.'.bac.pdf');
+
+        $command = 'pdftk '.$pageFile.'bac.pdf cat 1'.$direction.' output '.$pageFile.' verbose dont_ask';
+        $output = shell_exec($command);
+        $this->logShellCommand($command, $output);
+
+        $fs->remove($page.'.bac.pdf');
+
+        //Refresh screenshot
+        $command = 'convert -thumbnail 400x -colorspace srgb '.
+            '-background white -flatten '.$pageFile.'[0] '.
+            $this->_dirScr.$screenshot;
+
+        //Join Pages
         $command = 'pdftk ';
         foreach ($this->session->get('pdf_pages') AS $pk => $pv) {
             $command .= $this->_dirPdf.$this->session->get('pdf_unique_id').'/file_page_'.

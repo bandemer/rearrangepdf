@@ -13,7 +13,6 @@ use App\Pdftk;
 
 class DefaultController extends AbstractController
 {
-
     /**
      * @Route("/", name="index")
      */
@@ -62,7 +61,6 @@ class DefaultController extends AbstractController
      */
     public function showAction(SessionInterface $session)
     {
-
         return $this->render('default/show.html.twig', array(
             'pdf_unique_id' => $session->get('pdf_unique_id'),
             'pdf_original_filename' => $session->get('pdf_original_filename'),
@@ -79,7 +77,6 @@ class DefaultController extends AbstractController
      */
     public function processAction(SessionInterface $session, LoggerInterface $logger)
     {
-
         $pdftk = new Pdftk($session, $logger);
         $pdftk->processFile();
 
@@ -143,14 +140,34 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/delete/{page}", name="delete")
+     * @Route("/rotate{direction}/{page}", name="rotate")
      */
-    public function deleteAction($page, SessionInterface $session)
+    public function rotateAction($direction, int $page, SessionInterface $session, LoggerInterface $logger)
     {
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
-            $pdftk = new Pdftk($session);
+
+            $pdftk = new Pdftk($session, $logger);
+            $pdftk->rotate($direction, $page);
+
+            $session->getFlashBag()->add(
+                'success',
+                'OK! Die Seite wurde erfolgreich rotiert!');
+        }
+
+        return $this->redirectToRoute('show');
+    }
+
+    /**
+     * @Route("/delete/{page}", name="delete")
+     */
+    public function deleteAction($page, SessionInterface $session, LoggerInterface $logger)
+    {
+        $page = intval($page);
+
+        if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
+            $pdftk = new Pdftk($session, $logger);
 
             if ($pdftk->delete($page)) {
                 $session->getFlashBag()->add(
@@ -172,9 +189,9 @@ class DefaultController extends AbstractController
     /**
      * @Route("/download/", name="download")
      */
-    public function downloadAction(SessionInterface $session)
+    public function downloadAction(SessionInterface $session, LoggerInterface $logger)
     {
-        $pdftk = new Pdftk($session);
+        $pdftk = new Pdftk($session, $logger);
         if (!$pdftk->download()) {
             $session->getFlashBag()->add(
                 'error', 'Fehler: Download konnte nicht gestartet werden!');
