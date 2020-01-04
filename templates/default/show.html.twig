@@ -45,6 +45,8 @@
         <a href="/screenshot/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-image-o"></i> Screenshot</a>
         <a href="/moveup/{{ loop.index }}" class="dropdown-item {% if loop.index == 1 %}disabled{% endif %}"><i class="fa fa-arrow-up"></i> Nach oben</a>
         <a href="/movedown/{{ loop.index }}" class="dropdown-item {% if loop.index == pdf_pages|length %}disabled{% endif %}"><i class="fa fa-arrow-down"></i> Nach unten</a>
+        <a href="/rotate/left/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-left"></i> 90° nach links drehen</a>
+        <a href="/rotate/right/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-right"></i> 90° nach rechts drehen</a>
         <a href="/delete/{{ loop.index }}" class="dropdown-item {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('Wollen Sie die Seite {{ loop.index }} wirklich löschen?');"><i class="fa fa-trash"></i> Löschen</a>
     </div>  
 </div>

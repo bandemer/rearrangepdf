@@ -458,7 +458,7 @@ class Pdftk {
      */
     public function rotate(string $direction, int $page)
     {
-        $possibleDirections = ['east', 'west'];
+        $possibleDirections = ['left', 'right'];
         if(!in_array($direction, $possibleDirections)) {
             throw new \Exception('Direction must be one of "left" or "right"');
         }
@@ -484,31 +484,41 @@ class Pdftk {
         } else {
             $doBurst = true;
         }
+
         if ($doBurst) {
             $command = 'pdftk '.$pdfFileName.' burst output '.
                 $this->_dirPdf.$this->session->get('pdf_unique_id').
                 '/file_page_%04d.pdf verbose dont_ask';
             $output = shell_exec($command);
+            if (is_null($output)) {
+                $output = '';
+            }
             $this->logShellCommand($command, $output);
         }
 
-
         //Rotate page
         $pageFile = $this->_dirPdf.$this->session->get('pdf_unique_id').
-            '/file_page_'.str_pad($page+1, 4, '0', STR_PAD_LEFT).'.pdf';
+            '/file_page_'.str_pad($page, 4, '0', STR_PAD_LEFT).'.pdf';
 
-        $fs->rename($pageFile, $pageFile.'.bac.pdf');
-
-        $command = 'pdftk '.$pageFile.'bac.pdf cat 1'.$direction.' output '.$pageFile.' verbose dont_ask';
+        $command = 'pdftk '.$pageFile.' cat 1'.$direction.' output '.$pageFile.'.rotate verbose dont_ask';
         $output = shell_exec($command);
+        if (is_null($output)) {
+            $output = '';
+        }
         $this->logShellCommand($command, $output);
-
-        $fs->remove($page.'.bac.pdf');
+        $fs->remove($pageFile);
+        $fs->rename($pageFile.'.rotate', $pageFile);
 
         //Refresh screenshot
         $command = 'convert -thumbnail 400x -colorspace srgb '.
             '-background white -flatten '.$pageFile.'[0] '.
-            $this->_dirScr.$screenshot;
+            $this->_dirScr.$this->session->get('pdf_unique_id').'/page_'.
+            str_pad($page, 4, '0', STR_PAD_LEFT).'.jpg';
+        $output = shell_exec($command);
+        if (is_null($output)) {
+            $output = '';
+        }
+        $this->logShellCommand($command, $output);
 
         //Join Pages
         $command = 'pdftk ';
@@ -521,6 +531,9 @@ class Pdftk {
             '/file.pdf verbose dont_ask';
 
         $output = shell_exec($command);
+        if (is_null($output)) {
+            $output = '';
+        }
         $this->logShellCommand($command, $output);
 
         $fs->remove($this->_dirPdf.$this->session->get('pdf_unique_id').

@@ -140,7 +140,7 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/rotate{direction}/{page}", name="rotate")
+     * @Route("/rotate/{direction}/{page}", name="rotate")
      */
     public function rotateAction($direction, int $page, SessionInterface $session, LoggerInterface $logger)
     {
@@ -153,7 +153,7 @@ class DefaultController extends AbstractController
 
             $session->getFlashBag()->add(
                 'success',
-                'OK! Die Seite wurde erfolgreich rotiert!');
+                'OK! Die Seite wurde erfolgreich gedreht!');
         }
 
         return $this->redirectToRoute('show');
