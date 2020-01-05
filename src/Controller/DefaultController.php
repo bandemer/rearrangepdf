@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Psr\Log\LoggerInterface;
 use App\Pdftk;
 
@@ -16,14 +17,14 @@ class DefaultController extends AbstractController
     /**
      * @Route("/", name="index")
      */
-    public function indexAction(Request $request, SessionInterface $session, LoggerInterface $logger)
+    public function indexAction(Request $request, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $pdftk = new Pdftk($session, $logger);
         $errors = $pdftk->checkRequirements();
 
         $form = $this->createFormBuilder()
-            ->add('pdf', FileType::class, array('label' => 'Datei'))
-            ->add('save', SubmitType::class, array('label' => 'Hochladen'))
+            ->add('pdf', FileType::class, array('label' => 'PDF file:'))
+            ->add('save', SubmitType::class, array('label' => 'Upload'))
             ->getForm();
 
         $form->handleRequest($request);
@@ -35,7 +36,6 @@ class DefaultController extends AbstractController
             foreach ($request->files AS $file) {
 
                 foreach ($file AS $f) {
-
                     $check = $pdftk->prepareUploadedFile($f);
                     break;
                 }
@@ -48,8 +48,6 @@ class DefaultController extends AbstractController
                 return $this->redirectToRoute('index');
             }
         }
-
-
         return $this->render('default/index.html.twig', array(
             'form' => $form->createView(),
             'errors' => $errors
@@ -88,7 +86,7 @@ class DefaultController extends AbstractController
      *
      * @Route("/extract/{page}", name="extract")
      */
-    public function extractAction(int $page, SessionInterface $session, LoggerInterface $logger)
+    public function extractAction(int $page, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $page = intval($page);
 
@@ -106,7 +104,7 @@ class DefaultController extends AbstractController
      *
      * @Route("/screenshot/{page}", name="screenshot")
      */
-    public function screenshotAction(int $page, SessionInterface $session, LoggerInterface $logger)
+    public function screenshotAction(int $page, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $page = intval($page);
 
@@ -122,7 +120,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/move{direction}/{page}", name="move")
      */
-    public function moveAction($direction, int $page, SessionInterface $session, LoggerInterface $logger)
+    public function moveAction($direction, int $page, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $page = intval($page);
 
@@ -142,7 +140,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/rotate/{direction}/{page}", name="rotate")
      */
-    public function rotateAction($direction, int $page, SessionInterface $session, LoggerInterface $logger)
+    public function rotateAction($direction, int $page, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $page = intval($page);
 
@@ -162,7 +160,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/delete/{page}", name="delete")
      */
-    public function deleteAction($page, SessionInterface $session, LoggerInterface $logger)
+    public function deleteAction($page, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $page = intval($page);
 
@@ -189,7 +187,7 @@ class DefaultController extends AbstractController
     /**
      * @Route("/download/", name="download")
      */
-    public function downloadAction(SessionInterface $session, LoggerInterface $logger)
+    public function downloadAction(SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
     {
         $pdftk = new Pdftk($session, $logger);
         if (!$pdftk->download()) {

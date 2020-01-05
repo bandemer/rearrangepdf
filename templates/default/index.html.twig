@@ -7,14 +7,14 @@
 	<div class="d-flex justify-content-between">
 		<h1 class="h2">RearrangePDF</h1>
 		<span>
-			<a href="https://github.com/bandemer/rearrangepdf" class="btn btn-secondary py-2"><i class="fa fa-fw fa-github" aria-hidden="true"></i> View on GitHub</a>
+			<a href="https://github.com/bandemer/rearrangepdf" class="btn btn-secondary py-2"><i class="fa fa-fw fa-github" aria-hidden="true"></i> {% trans %}View on GitHub{% endtrans %}</a>
 		</span>
 	</div>
 	<hr>
 
 	{%  if errors %}
 	<div class="alert alert-danger" role="alert">
-		<h2 class="h4">The requirements on the server are not met:</h2>
+		<h2 class="h4">{% trans %}The requirements on the server are not met:{% endtrans %}</h2>
 		<ul>
 		{% for e in errors %}
 			<li>{{ e }}</li>
@@ -24,8 +24,6 @@
 	{% else %}
 
 	<div class="jumbotron bg-light border px-lg-5">
-	    <h2 class="h4 my-4">Upload PDF-File</h2>
-	        
 	    {% if app.session.flashBag.has('error') %}
 	    <div class="alert alert-danger" role="alert">
 	        {% for msg in app.session.flashBag.get('error') %}
