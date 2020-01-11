@@ -170,11 +170,11 @@ class DefaultController extends AbstractController
             if ($pdftk->delete($page)) {
                 $session->getFlashBag()->add(
                     'success',
-                    $translator->trans('OK! Page number was successfully deleted.', ['number' => $page]));
+                    $translator->trans('OK! Page %number% was successfully deleted.', ['number' => $page]));
             } else {
                 $session->getFlashBag()->add(
                     'error',
-                    $translator->trans('Error: Page number could not be deleted!', ['number' => $page]));
+                    $translator->trans('Error: Page %number% could not be deleted!', ['number' => $page]));
             }
         } else {
             $session->getFlashBag()->add(

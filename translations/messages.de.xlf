@@ -1,0 +1,127 @@
+<?xml version="1.0"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+    <file source-language="en" datatype="plaintext" original="file.ext">
+        <body>
+            <trans-unit id="t1">
+                <source>View on GitHub</source>
+                <target>Auf GitHub anzeigen</target>
+            </trans-unit>
+            <trans-unit id="t2">
+                <source>The requirements on the server are not met:</source>
+                <target>Der Server erfüllt nicht alle Anforderungen:</target>
+            </trans-unit>
+            <trans-unit id="t3">
+                <source>PDF file:</source>
+                <target>PDF-Datei:</target>
+            </trans-unit>
+            <trans-unit id="t4">
+                <source>Upload</source>
+                <target>Hochladen</target>
+            </trans-unit>
+            <trans-unit id="t5">
+                <source>Document Pages</source>
+                <target>Übersicht Seiten</target>
+            </trans-unit>
+            <trans-unit id="t6">
+                <source>Close</source>
+                <target>Schließen</target>
+            </trans-unit>
+            <trans-unit id="t7">
+                <source>Page</source>
+                <target>Seite</target>
+            </trans-unit>
+            <trans-unit id="t8">
+                <source>Actions</source>
+                <target>Aktionen</target>
+            </trans-unit>
+            <trans-unit id="t9">
+                <source>Extract page as PDF</source>
+                <target>als PDF extrahieren</target>
+            </trans-unit>
+            <trans-unit id="t10">
+                <source>Download screenshot</source>
+                <target>Screenshot herunterladen</target>
+            </trans-unit>
+            <trans-unit id="t11">
+                <source>Move page up</source>
+                <target>Nach oben verschieben</target>
+            </trans-unit>
+            <trans-unit id="t12">
+                <source>Move page down</source>
+                <target>Nach unten verschieben</target>
+            </trans-unit>
+            <trans-unit id="t13">
+                <source>Rotate 90° left</source>
+                <target>90° nach links drehen</target>
+            </trans-unit>
+            <trans-unit id="t14">
+                <source>Rotate 90° right</source>
+                <target>90° nach rechts drehen</target>
+            </trans-unit>
+            <trans-unit id="t15">
+                <source>Delete page</source>
+                <target>Seite löschen</target>
+            </trans-unit>
+            <trans-unit id="t16">
+                <source>Do you really want to to delete page %number%?</source>
+                <target>Wollen Sie die Seite %number% wirklich löschen?</target>
+            </trans-unit>
+            <trans-unit id="t17">
+                <source>Screenshot of page</source>
+                <target>Screenshot der Seite</target>
+            </trans-unit>
+            <trans-unit id="t18">
+                <source>File infos</source>
+                <target>Infos zur Datei</target>
+            </trans-unit>
+            <trans-unit id="t19">
+                <source>File name:</source>
+                <target>Dateiname:</target>
+            </trans-unit>
+            <trans-unit id="t20">
+                <source>File size:</source>
+                <target>Dateigröße:</target>
+            </trans-unit>
+            <trans-unit id="t21">
+                <source>Number of pages:</source>
+                <target>Seitenzahl:</target>
+            </trans-unit>
+            <trans-unit id="t22">
+                <source>Download PDF</source>
+                <target>PDF herunterladen</target>
+            </trans-unit>
+            <trans-unit id="t23">
+                <source>Error: Page could not be extracted!</source>
+                <target>Fehler: Seite konnte nicht extrahiert werden!</target>
+            </trans-unit>
+            <trans-unit id="t24">
+                <source>Error: Screenshot could not be created!</source>
+                <target>Fehler: Screenshot konnte nicht erstellt werden!</target>
+            </trans-unit>
+            <trans-unit id="t25">
+                <source>OK! Page was successfully moved.</source>
+                <target>OK! Die Seite wurde erfolgreich verschoben.</target>
+            </trans-unit>
+            <trans-unit id="t26">
+                <source>OK! Page was successfully rotated.</source>
+                <target>OK! Die Seite wurde erfolgreich gedreht.</target>
+            </trans-unit>
+            <trans-unit id="t27">
+                <source>OK! Page %number% was successfully deleted.</source>
+                <target>OK! Seite %number% wurde erfolgreich gelöscht.</target>
+            </trans-unit>
+            <trans-unit id="t28">
+                <source>Error: Page %number% could not be deleted!</source>
+                <target>Fehler: Seite %number% konnte nicht gelöscht werden!</target>
+            </trans-unit>
+            <trans-unit id="t29">
+                <source>Error: Page id not valid!</source>
+                <target>Fehler: Ungültige Seitenzahl!</target>
+            </trans-unit>
+            <trans-unit id="t30">
+                <source>Error: Download could not be started!</source>
+                <target>Fehler: Download konnte nicht gestartet werden!</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>
