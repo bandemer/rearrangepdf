@@ -95,7 +95,7 @@ class DefaultController extends AbstractController
             $pdftk->extractPage($page);
         }
         $session->getFlashBag()->add(
-            'error', 'Fehler: Seite konnte nicht extrahiert werden!');
+            'error', $translator->trans('Error: Page could not be extracted!'));
         return $this->redirectToRoute('show');
     }
 
@@ -113,7 +113,7 @@ class DefaultController extends AbstractController
             $pdftk->getScreenshot($page);
         }
         $session->getFlashBag()->add(
-                'error', 'Fehler: Screenshot konnte nicht erstellt werden!');
+                'error', $translator->trans('Error: Screenshot could not be created!'));
         return $this->redirectToRoute('show');
     }
 
@@ -131,7 +131,7 @@ class DefaultController extends AbstractController
 
             $session->getFlashBag()->add(
                 'success',
-                'OK! Die Seite wurde erfolgreich verschoben!');
+                $translator->trans('OK! Page was successfully moved.'));
         }
 
         return $this->redirectToRoute('show');
@@ -151,7 +151,7 @@ class DefaultController extends AbstractController
 
             $session->getFlashBag()->add(
                 'success',
-                'OK! Die Seite wurde erfolgreich gedreht!');
+                $translator->trans('OK! Page was successfully rotated.'));
         }
 
         return $this->redirectToRoute('show');
@@ -170,15 +170,15 @@ class DefaultController extends AbstractController
             if ($pdftk->delete($page)) {
                 $session->getFlashBag()->add(
                     'success',
-                    'OK! Seite '.$page.' wurde erfolgreich gelöscht!');
+                    $translator->trans('OK! Page %number% was successfully deleted.', ['number' => $page]));
             } else {
                 $session->getFlashBag()->add(
                     'error',
-                    'Fehler: Seite '.$page.' konnte nicht gelöscht werden!');
+                    $translator->trans('Error: Page %number% could not be deleted!', ['number' => $page]));
             }
         } else {
             $session->getFlashBag()->add(
-                'error', 'Fehler: Ungültige Seitenzahl');
+                'error', $translator->trans('Error: Page id not valid!'));
         }
 
         return $this->redirectToRoute('show');
@@ -192,7 +192,7 @@ class DefaultController extends AbstractController
         $pdftk = new Pdftk($session, $logger);
         if (!$pdftk->download()) {
             $session->getFlashBag()->add(
-                'error', 'Fehler: Download konnte nicht gestartet werden!');
+                'error', $translator->trans('Error: Download could not be started!'));
         }
         return $this->redirectToRoute('show');
     }

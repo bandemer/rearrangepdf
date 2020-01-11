@@ -22,7 +22,7 @@
             {% if app.session.flashBag.has('success') %}
                 {% for msg in app.session.flashBag.get('success') %}
                 <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="{% trans %}Close{% endtrans %}">
                     <span aria-hidden="true">&times;</span> </button>
                     {{ msg }}
                 </div>
@@ -37,51 +37,49 @@
                     
                     <div class="btn-group float-right" role="group">
                         <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Aktionen
+                            {% trans %}Actions{% endtrans %}
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                            <a href="/extract/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-pdf-o"></i> als PDF extrahieren</a>
-                            <a href="/screenshot/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-image-o"></i> Screenshot herunterladen</a>
-                            <a href="/moveup/{{ loop.index }}" class="dropdown-item {% if loop.index == 1 %}disabled{% endif %}"><i class="fa fa-arrow-up"></i> Nach oben verschieben</a>
-                            <a href="/movedown/{{ loop.index }}" class="dropdown-item {% if loop.index == pdf_pages|length %}disabled{% endif %}"><i class="fa fa-arrow-down"></i> Nach unten verschieben</a>
-                            <a href="/rotate/left/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-left"></i> 90° nach links drehen</a>
-                            <a href="/rotate/right/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-right"></i> 90° nach rechts drehen</a>
-                            <a href="/delete/{{ loop.index }}" class="dropdown-item {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('Wollen Sie die Seite {{ loop.index }} wirklich löschen?');"><i class="fa fa-trash"></i> Löschen</a>
+                            <a href="/extract/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-pdf-o"></i> {% trans %}Extract page as PDF{% endtrans %}</a>
+                            <a href="/screenshot/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-image-o"></i> {% trans %}Download screenshot{% endtrans %}</a>
+                            <a href="/moveup/{{ loop.index }}" class="dropdown-item {% if loop.index == 1 %}disabled{% endif %}"><i class="fa fa-arrow-up"></i> {% trans %}Move page up{% endtrans %}</a>
+                            <a href="/movedown/{{ loop.index }}" class="dropdown-item {% if loop.index == pdf_pages|length %}disabled{% endif %}"><i class="fa fa-arrow-down"></i> {% trans %}Move page down{% endtrans %}</a>
+                            <a href="/rotate/left/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-left"></i> {% trans %}Rotate 90° left{% endtrans %}</a>
+                            <a href="/rotate/right/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-right"></i> {% trans %}Rotate 90° right{% endtrans %}</a>
+                            <a href="/delete/{{ loop.index }}" class="dropdown-item {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('{% trans with { '%number%': loop.index } %}Do you really want to to delete page %number%?{% endtrans %}');"><i class="fa fa-trash"></i> {% trans %}Delete page{% endtrans %}</a>
                         </div>
                     </div>
 
-                    
                 </div>
                 <div class="card-block">
                     <div class="m-3 text-center">
-                        <img src="/{{ page }}" alt="Page {{ loop.index }}" class="border border-1">
+                        <img src="/{{ page }}" alt="{% trans %}Screenshot of page{% endtrans %} {{ loop.index }}" class="border border-1">
                     </div>
                 </div>                
             </div>
             
             {% endfor %}    
              
-       
         </div>
         <div class="col-lg-4">
         	<div class="sticky-top">
         
-	            <h2>Infos zur Datei</h2>
+	            <h2>{% trans %}File infos{% endtrans %}</h2>
 	            <ul class="list-group">
 	                <li class="list-group-item">
-	                    <strong class="label">Dateiname:</strong> {{ pdf_shorten_filename }}
+	                    <strong class="label">{% trans %}File name:{% endtrans %}</strong> {{ pdf_shorten_filename }}
 	                </li>
 	                <li class="list-group-item">
-	                    <strong class="label">Dateigröße:</strong> {{ pdf_filesize }}
+	                    <strong class="label">{% trans %}File size:{% endtrans %}</strong> {{ pdf_filesize }}
 	                </li>
 	                <li class="list-group-item">
-	                    <strong class="label">Seitenzahl:</strong> {{ pdf_pages|length }}
+	                    <strong class="label">{% trans %}Number of pages:{% endtrans %}</strong> {{ pdf_pages|length }}
 	                </li>
 	            </ul>
 	            
 	            <div class="download">
 	                <a href="/download/" class="btn btn-primary">
-	                    <i class="fa fa-download" aria-hidden="true"></i> Download PDF
+	                    <i class="fa fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
 	                </a>
 	            </div>
             </div>
@@ -92,5 +90,3 @@
         
 </div>
 {% endblock %}
-
-
