@@ -2,32 +2,32 @@
 
 {% block body %}
 
-<div class="container-fluid">
-            
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top border p-3">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainnavbar" aria-controls="mainnavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainnavbar">
+        <a class="navbar-brand" href="#"><strong>RearrangePDF</strong></a>
+        <ul class="navbar-nav mx-auto">
+            <li class="nav-item mr-3">
+                <strong>{% trans %}File name:{% endtrans %}</strong> {{ pdf_shorten_filename }}
+            </li>
+            <li class="nav-item mr-3">
+                <strong>{% trans %}File size:{% endtrans %}</strong> {{ pdf_filesize }}
+            </li>
+            <li class="nav-item mr-3">
+                <strong>{% trans %}Number of pages:{% endtrans %}</strong> {{ pdf_pages|length }}
+            </li>
+        </ul>
+        <a href="/download/" class="btn btn-primary float-right">
+            <i class="fa fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
+        </a>
+    </div>
+</nav>
 
-        <div class="bg-light border-right px-3 py-3 py-lg-5 w-25 h-100" style="position:fixed;">
+<div class="container-fluid" style="padding-top:5rem;">
 
-                <h2>{% trans %}File infos{% endtrans %}</h2>
-                <ul class="list-group">
-                    <li class="list-group-item">
-                        <strong class="label">{% trans %}File name:{% endtrans %}</strong> {{ pdf_shorten_filename }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong class="label">{% trans %}File size:{% endtrans %}</strong> {{ pdf_filesize }}
-                    </li>
-                    <li class="list-group-item">
-                        <strong class="label">{% trans %}Number of pages:{% endtrans %}</strong> {{ pdf_pages|length }}
-                    </li>
-                </ul>
-
-                <div class="download">
-                    <a href="/download/" class="btn btn-primary">
-                        <i class="fa fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
-                    </a>
-                </div>
-        </div>
-
-        <div class="w-75 px-5" style="margin-left:25%;">
+        <div class="w-75 px-5 mx-auto">
 
                 {% if app.session.flashBag.has('error') %}
                     {% for msg in app.session.flashBag.get('error') %}
