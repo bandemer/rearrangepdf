@@ -2,89 +2,86 @@
 
 {% block body %}
 
-<div class="container">
-            
-    <div class="row">
-        
-        <div class="col-lg-8">
-        
-            <h1>{% trans %}Document Pages{% endtrans %}</h1>
-            
-            {% if app.session.flashBag.has('error') %}
-                {% for msg in app.session.flashBag.get('error') %}
-                <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span> </button>
-                    {{ msg }}
-                </div>
-                {% endfor %}
-            {% endif %}
-            {% if app.session.flashBag.has('success') %}
-                {% for msg in app.session.flashBag.get('success') %}
-                <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="{% trans %}Close{% endtrans %}">
-                    <span aria-hidden="true">&times;</span> </button>
-                    {{ msg }}
-                </div>
-                {% endfor %}
-            {% endif %}
-            
-            {% for page in pdf_pages %}
-            
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="float-left">{% trans %}Page{% endtrans %} {{ loop.index }}</h3>
-                    
-                    <div class="btn-group float-right" role="group">
-                        <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {% trans %}Actions{% endtrans %}
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                            <a href="/extract/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-pdf-o"></i> {% trans %}Extract page as PDF{% endtrans %}</a>
-                            <a href="/screenshot/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-image-o"></i> {% trans %}Download screenshot{% endtrans %}</a>
-                            <a href="/moveup/{{ loop.index }}" class="dropdown-item {% if loop.index == 1 %}disabled{% endif %}"><i class="fa fa-arrow-up"></i> {% trans %}Move page up{% endtrans %}</a>
-                            <a href="/movedown/{{ loop.index }}" class="dropdown-item {% if loop.index == pdf_pages|length %}disabled{% endif %}"><i class="fa fa-arrow-down"></i> {% trans %}Move page down{% endtrans %}</a>
-                            <a href="/rotate/left/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-left"></i> {% trans %}Rotate 90° left{% endtrans %}</a>
-                            <a href="/rotate/right/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-right"></i> {% trans %}Rotate 90° right{% endtrans %}</a>
-                            <a href="/delete/{{ loop.index }}" class="dropdown-item {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('{% trans with { '%number%': loop.index } %}Do you really want to to delete page %number%?{% endtrans %}');"><i class="fa fa-trash"></i> {% trans %}Delete page{% endtrans %}</a>
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top border p-3">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainnavbar" aria-controls="mainnavbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="mainnavbar">
+        <a class="navbar-brand" href="#"><strong>RearrangePDF</strong></a>
+        <ul class="navbar-nav mx-auto">
+            <li class="nav-item mr-3">
+                <strong>{% trans %}File name:{% endtrans %}</strong> {{ pdf_shorten_filename }}
+            </li>
+            <li class="nav-item mr-3">
+                <strong>{% trans %}File size:{% endtrans %}</strong> {{ pdf_filesize }}
+            </li>
+            <li class="nav-item mr-3">
+                <strong>{% trans %}Number of pages:{% endtrans %}</strong> {{ pdf_pages|length }}
+            </li>
+        </ul>
+        <a href="/download/" class="btn btn-primary float-right">
+            <i class="fa fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
+        </a>
+    </div>
+</nav>
+
+<div class="container-fluid" style="padding-top:5rem;">
+
+        <div class="w-75 px-5 mx-auto">
+
+                {% if app.session.flashBag.has('error') %}
+                    {% for msg in app.session.flashBag.get('error') %}
+                    <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span> </button>
+                        {{ msg }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% if app.session.flashBag.has('success') %}
+                    {% for msg in app.session.flashBag.get('success') %}
+                    <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="{% trans %}Close{% endtrans %}">
+                        <span aria-hidden="true">&times;</span> </button>
+                        {{ msg }}
+                    </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% for page in pdf_pages %}
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="float-left">{% trans %}Page{% endtrans %} {{ loop.index }}</h3>
+
+                        <div class="btn-group float-right" role="group">
+                            <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                {% trans %}Actions{% endtrans %}
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
+                                <a href="/extract/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-pdf-o"></i> {% trans %}Extract page as PDF{% endtrans %}</a>
+                                <a href="/screenshot/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-image-o"></i> {% trans %}Download screenshot{% endtrans %}</a>
+                                <a href="/moveup/{{ loop.index }}" class="dropdown-item {% if loop.index == 1 %}disabled{% endif %}"><i class="fa fa-arrow-up"></i> {% trans %}Move page up{% endtrans %}</a>
+                                <a href="/movedown/{{ loop.index }}" class="dropdown-item {% if loop.index == pdf_pages|length %}disabled{% endif %}"><i class="fa fa-arrow-down"></i> {% trans %}Move page down{% endtrans %}</a>
+                                <a href="/rotate/left/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-left"></i> {% trans %}Rotate 90° left{% endtrans %}</a>
+                                <a href="/rotate/right/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-right"></i> {% trans %}Rotate 90° right{% endtrans %}</a>
+                                <a href="/delete/{{ loop.index }}" class="dropdown-item {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('{% trans with { '%number%': loop.index } %}Do you really want to to delete page %number%?{% endtrans %}');"><i class="fa fa-trash"></i> {% trans %}Delete page{% endtrans %}</a>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-block">
+                        <div class="m-3 text-center">
+                            <img src="/{{ page }}" alt="{% trans %}Screenshot of page{% endtrans %} {{ loop.index }}" class="border border-1">
                         </div>
                     </div>
-
                 </div>
-                <div class="card-block">
-                    <div class="m-3 text-center">
-                        <img src="/{{ page }}" alt="{% trans %}Screenshot of page{% endtrans %} {{ loop.index }}" class="border border-1">
-                    </div>
-                </div>                
-            </div>
-            
-            {% endfor %}    
-             
+
+                {% endfor %}
+
+
         </div>
-        <div class="col-lg-4">
-        	<div class="sticky-top">
-        
-	            <h2>{% trans %}File infos{% endtrans %}</h2>
-	            <ul class="list-group">
-	                <li class="list-group-item">
-	                    <strong class="label">{% trans %}File name:{% endtrans %}</strong> {{ pdf_shorten_filename }}
-	                </li>
-	                <li class="list-group-item">
-	                    <strong class="label">{% trans %}File size:{% endtrans %}</strong> {{ pdf_filesize }}
-	                </li>
-	                <li class="list-group-item">
-	                    <strong class="label">{% trans %}Number of pages:{% endtrans %}</strong> {{ pdf_pages|length }}
-	                </li>
-	            </ul>
-	            
-	            <div class="download">
-	                <a href="/download/" class="btn btn-primary">
-	                    <i class="fa fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
-	                </a>
-	            </div>
-            </div>
-            
-        </div>
+
         
     </div>
         
