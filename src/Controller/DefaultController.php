@@ -197,4 +197,15 @@ class DefaultController extends AbstractController
         return $this->redirectToRoute('show');
     }
 
+    /**
+     * @Route("/restart/", name="restart")
+     * @param SessionInterface $session
+     */
+    public function restart(SessionInterface $session)
+    {
+        $session->clear();
+        return $this->redirectToRoute('index');
+    }
+
+
 }

@@ -122,6 +122,10 @@
                 <source>Error: Download could not be started!</source>
                 <target>Fehler: Download konnte nicht gestartet werden!</target>
             </trans-unit>
+            <trans-unit id="t31">
+                <source>Restart with a new File</source>
+                <target>Mit neuer Datei starten</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
