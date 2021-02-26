@@ -40,5 +40,18 @@
         
 </div>
 {% endblock %}
+{% block javascripts %}
 
+<script type="text/javascript">
 
+/**
+ * Update File-Input Label
+ */
+$('#form_pdf').on('change',function(){
+	let fileName = $(this).val();
+	fileName =  fileName.replace('C:\\fakepath\\', '');
+	$(this).next('.custom-file-label').html(fileName);
+})
+</script>
+
+{% endblock %}
