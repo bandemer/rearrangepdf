@@ -18,3 +18,8 @@
 ###< symfony/phpunit-bridge ###
 
 /public/screenshots/*
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###
