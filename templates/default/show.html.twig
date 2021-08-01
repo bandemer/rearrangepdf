@@ -7,15 +7,15 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="mainnavbar">
-        <h1 class="navbar-brand"<strong><i class="fa fa-fw fa-file-o" aria-hidden="true"></i> Rearrange PDF</strong></h1>
+        <h1 class="navbar-brand"><strong><i class="fa fa-fw fa-file-o" aria-hidden="true"></i> Rearrange PDF</strong></h1>
         <ul class="navbar-nav mx-auto">
-            <li class="nav-item mr-3">
+            <li class="nav-item mr-3 mr-xl-4">
                 <strong>{% trans %}File name:{% endtrans %}</strong> {{ pdf_shorten_filename }}
             </li>
-            <li class="nav-item mr-3">
+            <li class="nav-item mr-3 mr-xl-4">
                 <strong>{% trans %}File size:{% endtrans %}</strong> {{ pdf_filesize }}
             </li>
-            <li class="nav-item mr-3">
+            <li class="nav-item mr-3 mr-xl-4">
                 <strong>{% trans %}Number of pages:{% endtrans %}</strong> {{ pdf_pages|length }}
             </li>
         </ul>
@@ -51,38 +51,36 @@
                     {% endfor %}
                 {% endif %}
 
+
+            <div class="row justify-content-center">
+
                 {% for page in pdf_pages %}
 
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="float-left">{% trans %}Page{% endtrans %} {{ loop.index }}</h3>
+                <div class="col-12 col-lg-6 col-xl-4">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-end">
 
-                        <div class="btn-group float-right" role="group">
-                            <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {% trans %}Actions{% endtrans %}
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="btnGroupDrop1">
-                                <a href="/extract/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-pdf-o"></i> {% trans %}Extract page as PDF{% endtrans %}</a>
-                                <a href="/screenshot/{{ loop.index }}" class="dropdown-item"><i class="fa fa-file-image-o"></i> {% trans %}Download screenshot{% endtrans %}</a>
-                                <a href="/moveup/{{ loop.index }}" class="dropdown-item {% if loop.index == 1 %}disabled{% endif %}"><i class="fa fa-arrow-up"></i> {% trans %}Move page up{% endtrans %}</a>
-                                <a href="/movedown/{{ loop.index }}" class="dropdown-item {% if loop.index == pdf_pages|length %}disabled{% endif %}"><i class="fa fa-arrow-down"></i> {% trans %}Move page down{% endtrans %}</a>
-                                <a href="/rotate/left/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-left"></i> {% trans %}Rotate 90° left{% endtrans %}</a>
-                                <a href="/rotate/right/{{ loop.index }}" class="dropdown-item"><i class="fa fa-rotate-right"></i> {% trans %}Rotate 90° right{% endtrans %}</a>
-                                <a href="/delete/{{ loop.index }}" class="dropdown-item {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('{% trans with { '%number%': loop.index } %}Do you really want to to delete page %number%?{% endtrans %}');"><i class="fa fa-trash"></i> {% trans %}Delete page{% endtrans %}</a>
-                            </div>
+                            <a href="/extract/{{ loop.index }}" class="btn btn-sm border ml-2" title="{% trans %}Extract page as PDF{% endtrans %}"><i class="fa fa-file-pdf-o"></i></a>
+                            <a href="/screenshot/{{ loop.index }}" class="btn btn-sm border ml-2" title="{% trans %}Download screenshot{% endtrans %}"><i class="fa fa-file-image-o"></i> </a>
+                            <a href="/moveup/{{ loop.index }}" class="btn btn-sm border ml-2 {% if loop.index == 1 %}disabled{% endif %}" title="{% trans %}Move page up{% endtrans %}"><i class="fa fa-arrow-up"></i></a>
+                            <a href="/movedown/{{ loop.index }}" class="btn btn-sm border ml-2 {% if loop.index == pdf_pages|length %}disabled{% endif %}" title="{% trans %}Move page down{% endtrans %}"><i class="fa fa-arrow-down"></i></a>
+                            <a href="/rotate/left/{{ loop.index }}" class="btn btn-sm border ml-2" title="{% trans %}Rotate 90° left{% endtrans %}"><i class="fa fa-rotate-left"></i></a>
+                            <a href="/rotate/right/{{ loop.index }}" class="btn btn-sm border ml-2" title="{% trans %}Rotate 90° right{% endtrans %}"><i class="fa fa-rotate-right"></i></a>
+                            <a href="/delete/{{ loop.index }}" class="btn btn-sm border ml-2 {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('{% trans with { '%number%': loop.index } %}Do you really want to to delete page %number%?{% endtrans %}');" title="{% trans %}Delete page{% endtrans %}"><i class="fa fa-trash"></i></a>
+
                         </div>
-
-                    </div>
-                    <div class="card-block">
-                        <div class="m-3 text-center">
-                            <img src="/{{ page }}" alt="{% trans %}Screenshot of page{% endtrans %} {{ loop.index }}" class="border border-1">
+                        <div class="card-block">
+                            <div class="m-3 text-center">
+                                <img src="/{{ page }}" alt="{% trans %}Screenshot of page{% endtrans %} {{ loop.index }}" class="img img-fluid border border-1">
+                            </div>
+                            <div class="m-3 text-center">{% trans %}Page{% endtrans %} {{ loop.index }}</div>
                         </div>
                     </div>
                 </div>
 
                 {% endfor %}
 
-
+            </div>
         </div>
 
         
