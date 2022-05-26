@@ -2,8 +2,8 @@
 
 namespace Tests\AppBundle;
 
-use AppBundle\Pdftk;
-use AppBundle\Testablesession;
+use App\Pdftk;
+use App\Testablesession;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PdftkTest extends \PHPUnit\Framework\TestCase
