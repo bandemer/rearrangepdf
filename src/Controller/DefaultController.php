@@ -69,22 +69,6 @@ class DefaultController extends AbstractController
     }
 
     /**
-     * @Route("/add/", name="add")
-     */
-    public function addAction(SessionInterface $session)
-    {
-        die('hallo');
-
-        return $this->render('default/show.html.twig', array(
-            'pdf_unique_id' => $session->get('pdf_unique_id'),
-            'pdf_original_filename' => $session->get('pdf_original_filename'),
-            'pdf_shorten_filename' => $session->get('pdf_shorten_filename'),
-            'pdf_filesize' => $session->get('pdf_filesize'),
-            'pdf_pages' => $session->get('pdf_pages'),
-        ));
-    }
-
-    /**
      * Split PDF into Pages
      *
      * @Route("/process/", name="process")
@@ -229,6 +213,8 @@ class DefaultController extends AbstractController
      */
     public function add(SessionInterface $session)
     {
+        die('Test');
+
 
         return $this->redirectToRoute('index');
     }
