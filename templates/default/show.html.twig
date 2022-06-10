@@ -20,10 +20,16 @@
             </li>
         </ul>
         <a href="/download/" class="btn btn-primary float-right">
-            <i class="fa fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
+            <i class="fa fa-fw fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
         </a>
+        <form class="d-flex" id="addform" method="post" action="/add/">
+            <label for="file-upload" class="btn btn-primary d-block">
+                Add
+            </label>
+            <input id="file-upload" type="file" class="d-none" onchange="document.getElementById('addform').submit();">
+        </form>
         <a href="/restart/" class="btn btn-secondary float-right ml-2">
-            <i class="fa fa-refresh" aria-hidden="true"></i> {% trans %}Restart with a new File{% endtrans %}
+            <i class="fa fa-fw fa-refresh" aria-hidden="true"></i> {% trans %}Restart with a new File{% endtrans %}
         </a>
     </div>
 </nav>
@@ -50,7 +56,6 @@
                     </div>
                     {% endfor %}
                 {% endif %}
-
 
             <div class="row justify-content-center">
 
