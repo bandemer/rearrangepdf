@@ -91,38 +91,42 @@
                 <target>PDF herunterladen</target>
             </trans-unit>
             <trans-unit id="t23">
+                <source>Append file</source>
+                <target>Datei hinzufügen</target>
+            </trans-unit>
+            <trans-unit id="t24">
                 <source>Error: Page could not be extracted!</source>
                 <target>Fehler: Seite konnte nicht extrahiert werden!</target>
             </trans-unit>
-            <trans-unit id="t24">
+            <trans-unit id="t25">
                 <source>Error: Screenshot could not be created!</source>
                 <target>Fehler: Screenshot konnte nicht erstellt werden!</target>
             </trans-unit>
-            <trans-unit id="t25">
+            <trans-unit id="t26">
                 <source>OK! Page was successfully moved.</source>
                 <target>OK! Die Seite wurde erfolgreich verschoben.</target>
             </trans-unit>
-            <trans-unit id="t26">
+            <trans-unit id="t27">
                 <source>OK! Page was successfully rotated.</source>
                 <target>OK! Die Seite wurde erfolgreich gedreht.</target>
             </trans-unit>
-            <trans-unit id="t27">
+            <trans-unit id="t28">
                 <source>OK! Page %number% was successfully deleted.</source>
                 <target>OK! Seite %number% wurde erfolgreich gelöscht.</target>
             </trans-unit>
-            <trans-unit id="t28">
+            <trans-unit id="t29">
                 <source>Error: Page %number% could not be deleted!</source>
                 <target>Fehler: Seite %number% konnte nicht gelöscht werden!</target>
             </trans-unit>
-            <trans-unit id="t29">
+            <trans-unit id="t30">
                 <source>Error: Page id not valid!</source>
                 <target>Fehler: Ungültige Seitenzahl!</target>
             </trans-unit>
-            <trans-unit id="t30">
+            <trans-unit id="t31">
                 <source>Error: Download could not be started!</source>
                 <target>Fehler: Download konnte nicht gestartet werden!</target>
             </trans-unit>
-            <trans-unit id="t31">
+            <trans-unit id="t32">
                 <source>Restart with a new File</source>
                 <target>Mit neuer Datei starten</target>
             </trans-unit>

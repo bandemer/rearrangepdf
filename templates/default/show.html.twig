@@ -19,18 +19,21 @@
                 <strong>{% trans %}Number of pages:{% endtrans %}</strong> {{ pdf_pages|length }}
             </li>
         </ul>
-        <a href="/download/" class="btn btn-primary float-right">
-            <i class="fa fa-fw fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
-        </a>
-        <form class="d-flex" id="addform" method="post" action="/add/">
-            <label for="file-upload" class="btn btn-primary d-block">
-                Add
-            </label>
-            <input id="file-upload" type="file" class="d-none" onchange="document.getElementById('addform').submit();">
+        <form id="addform" method="post" action="/add/">
+            <div class="mx-2 d-flex align-items-center">
+                <a href="/download/" class="btn btn-primary">
+                    <i class="fa fa-fw fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
+                </a>
+                <label for="file-upload" class="mt-2 mx-2 btn btn-primary d-block">
+                    <i class="fa fa-fw fa-plus" aria-hidden="true"></i> {% trans %}Append file{% endtrans %}
+                </label>
+                <input id="file-upload" type="file" class="d-none" onchange="document.getElementById('addform').submit();">
+                <a href="/restart/" class="btn btn-secondary">
+                    <i class="fa fa-fw fa-refresh" aria-hidden="true"></i> {% trans %}Restart with a new File{% endtrans %}
+                </a>
+            </div>
         </form>
-        <a href="/restart/" class="btn btn-secondary float-right ml-2">
-            <i class="fa fa-fw fa-refresh" aria-hidden="true"></i> {% trans %}Restart with a new File{% endtrans %}
-        </a>
+
     </div>
 </nav>
 
