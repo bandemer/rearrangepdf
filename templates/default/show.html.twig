@@ -19,7 +19,7 @@
                 <strong>{% trans %}Number of pages:{% endtrans %}</strong> {{ pdf_pages|length }}
             </li>
         </ul>
-        <form id="addform" method="post" action="/add/">
+        <form id="addform" method="post" action="/add/" enctype="multipart/form-data">
             <div class="mx-2 d-flex align-items-center">
                 <a href="/download/" class="btn btn-primary">
                     <i class="fa fa-fw fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
@@ -27,7 +27,7 @@
                 <label for="file-upload" class="mt-2 mx-2 btn btn-primary d-block">
                     <i class="fa fa-fw fa-plus" aria-hidden="true"></i> {% trans %}Append file{% endtrans %}
                 </label>
-                <input id="file-upload" type="file" class="d-none" onchange="document.getElementById('addform').submit();">
+                <input id="file-upload" type="file" class="d-none" name="appendfile" onchange="document.getElementById('addform').submit();">
                 <a href="/restart/" class="btn btn-secondary">
                     <i class="fa fa-fw fa-refresh" aria-hidden="true"></i> {% trans %}Restart with a new File{% endtrans %}
                 </a>
@@ -60,7 +60,7 @@
                     {% endfor %}
                 {% endif %}
 
-            <div class="row justify-content-center">
+            <div class="row justify-content-start">
 
                 {% for page in pdf_pages %}
 

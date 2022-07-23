@@ -141,7 +141,7 @@ class Pdftk {
     }
 
     /**
-     * process a pdf file
+     * Process a pdf file
      * @return boolean
      */
     public function processFile() : bool
@@ -227,6 +227,74 @@ class Pdftk {
         $this->session->set('pdf_pages', $pages);
         $this->session->save();
 
+        return true;
+    }
+
+    /**
+     * Append a pdf file
+     * @param \Symfony\Component\HttpFoundation\File\UploadedFile $file
+     * @return boolean
+     */
+    public function appendFile(UploadedFile $file) : bool
+    {
+        $pdfFile = $this->_dirPdf.
+            $this->session->get('pdf_unique_id').'/file.pdf';
+
+        $appendFile = $this->_dirPdf.
+            $this->session->get('pdf_unique_id').'/file_append.pdf';
+
+        $binderFile = $this->_dirPdf.
+            $this->session->get('pdf_unique_id').'/file_binder.pdf';
+
+        try {
+
+            $file->move($this->_dirPdf.$this->session->get('pdf_unique_id'),
+                'file_append.pdf');
+
+        } catch (\Exception $e) {
+
+            $message = 'Fehler: Datei konnte nicht verschoben werden.';
+            $this->session->getFlashBag()->add('error', $message);
+            $this->logger->error($message);
+            return false;
+        }
+
+        //Check if append file is PDF
+        if (substr(file_get_contents($appendFile), 0, 4) != '%PDF') {
+            $message = 'Fehler: Kein gültiges PDF-Dokument!';
+            $this->session->getFlashBag()->add('error', $message);
+            $this->logger->error($message);
+            return false;
+        }
+
+        $command = 'pdftk '.$pdfFile.' '.$appendFile.' cat output '.$binderFile;
+
+        $output = shell_exec($command);
+        if (is_null($output)) {
+            $output = '';
+        }
+        $this->logShellCommand($command, $output);
+
+        //Check if binder file is PDF
+        if (substr(file_get_contents($binderFile), 0, 4) != '%PDF') {
+            $message = 'Fehler: Es wird kein gültiges PDF-Dokument erzeugt';
+            $this->session->getFlashBag()->add('error', $message);
+            $this->logger->error($message);
+            return false;
+        }
+
+        //Rename and delete Files
+        $fs = new Filesystem();
+        try {
+            $fs->remove($pdfFile);
+            $fs->rename($binderFile, $pdfFile);
+            $fs->remove($appendFile);
+        } catch (\Exception $e) {
+            $message = 'Fehler: Löschen und Umbennen war nicht möglich';
+            $this->session->getFlashBag()->add('error', $message);
+            $this->logger->error($message);
+            return false;
+        }
         return true;
     }
 

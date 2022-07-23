@@ -92,7 +92,7 @@
             </trans-unit>
             <trans-unit id="t23">
                 <source>Append file</source>
-                <target>Datei hinzufügen</target>
+                <target>Datei anfügen</target>
             </trans-unit>
             <trans-unit id="t24">
                 <source>Error: Page could not be extracted!</source>

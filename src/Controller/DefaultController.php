@@ -76,6 +76,7 @@ class DefaultController extends AbstractController
     public function processAction(SessionInterface $session, LoggerInterface $logger)
     {
         $pdftk = new Pdftk($session, $logger);
+
         $pdftk->processFile();
 
         return $this->redirectToRoute('show');
@@ -211,12 +212,20 @@ class DefaultController extends AbstractController
      * @Route("/add/", name="add")
      * @param SessionInterface $session
      */
-    public function add(SessionInterface $session)
+    public function add(Request $request, SessionInterface $session, LoggerInterface $logger)
     {
-        die('Test');
+        $pdftk = new Pdftk($session, $logger);
+
+        $file = $request->files->get('appendfile');
+        $check = $pdftk->appendFile($file);
 
 
-        return $this->redirectToRoute('index');
+        if ($check) {
+            return $this->redirectToRoute('process');
+        }
+
+        return $this->redirectToRoute('show');
+
     }
 
 
