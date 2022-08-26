@@ -212,9 +212,9 @@ class DefaultController extends AbstractController
      * @Route("/add/", name="add")
      * @param SessionInterface $session
      */
-    public function add(Request $request, SessionInterface $session, LoggerInterface $logger)
+    public function add(Request $request, LoggerInterface $logger)
     {
-        $pdftk = new Pdftk($session, $logger);
+        $pdftk = new Pdftk($request->getSession(), $logger);
 
         $file = $request->files->get('appendfile');
         $check = $pdftk->appendFile($file);

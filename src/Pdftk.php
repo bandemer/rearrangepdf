@@ -4,7 +4,6 @@ namespace App;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Pdftk {
@@ -42,9 +41,8 @@ class Pdftk {
     /**
      * Pdftk constructor
      *
-     * @param SessionInterface $session
      */
-    public function __construct(SessionInterface $session, LoggerInterface $logger)
+    public function __construct($session, LoggerInterface $logger)
     {
         $this->session = $session;
 
