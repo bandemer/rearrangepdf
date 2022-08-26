@@ -1,10 +1,11 @@
 <?php
 
-namespace App;
+namespace App\Service;
 
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Pdftk {
 
@@ -42,13 +43,13 @@ class Pdftk {
      * Pdftk constructor
      *
      */
-    public function __construct($session, LoggerInterface $logger)
+    public function __construct(SessionInterface $session, LoggerInterface $logger)
     {
         $this->session = $session;
 
         $this->logger = $logger;
 
-        $basePath = __DIR__.'/../';
+        $basePath = __DIR__.'/../../';
 
         $this->_dirPdf = realpath($basePath.'var/pdf/').'/';
         $this->_dirScr = realpath($basePath.'public/screenshots/').'/';

@@ -7,19 +7,18 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Psr\Log\LoggerInterface;
-use App\Pdftk;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+
+use App\Service\Pdftk;
 
 class DefaultController extends AbstractController
 {
     /**
      * @Route("/", name="index")
      */
-    public function indexAction(Request $request, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
+    public function indexAction(Request $request, Pdftk $pdftk)
     {
-        $pdftk = new Pdftk($session, $logger);
         $errors = $pdftk->checkRequirements();
 
         $form = $this->createFormBuilder()
@@ -73,10 +72,8 @@ class DefaultController extends AbstractController
      *
      * @Route("/process/", name="process")
      */
-    public function processAction(SessionInterface $session, LoggerInterface $logger)
+    public function processAction(Pdftk $pdftk)
     {
-        $pdftk = new Pdftk($session, $logger);
-
         $pdftk->processFile();
 
         return $this->redirectToRoute('show');
@@ -87,12 +84,11 @@ class DefaultController extends AbstractController
      *
      * @Route("/extract/{page}", name="extract")
      */
-    public function extractAction(int $page, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
+    public function extractAction(int $page, Pdftk $pdftk, SessionInterface $session, TranslatorInterface $translator)
     {
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
-            $pdftk = new Pdftk($session, $logger);
             $pdftk->extractPage($page);
         }
         $session->getFlashBag()->add(
@@ -105,12 +101,12 @@ class DefaultController extends AbstractController
      *
      * @Route("/screenshot/{page}", name="screenshot")
      */
-    public function screenshotAction(int $page, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
+    public function screenshotAction(int $page, SessionInterface $session, Pdftk $pdftk, TranslatorInterface $translator)
     {
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
-            $pdftk = new Pdftk($session, $logger);
+
             $pdftk->getScreenshot($page);
         }
         $session->getFlashBag()->add(
@@ -121,13 +117,12 @@ class DefaultController extends AbstractController
     /**
      * @Route("/move{direction}/{page}", name="move")
      */
-    public function moveAction($direction, int $page, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
+    public function moveAction($direction, int $page, SessionInterface $session, Pdftk $pdftk, TranslatorInterface $translator)
     {
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
 
-            $pdftk = new Pdftk($session, $logger);
             $pdftk->move($direction, $page);
 
             $session->getFlashBag()->add(
@@ -141,13 +136,12 @@ class DefaultController extends AbstractController
     /**
      * @Route("/rotate/{direction}/{page}", name="rotate")
      */
-    public function rotateAction($direction, int $page, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
+    public function rotateAction($direction, int $page, SessionInterface $session, Pdftk $pdftk, TranslatorInterface $translator)
     {
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
 
-            $pdftk = new Pdftk($session, $logger);
             $pdftk->rotate($direction, $page);
 
             $session->getFlashBag()->add(
@@ -161,12 +155,11 @@ class DefaultController extends AbstractController
     /**
      * @Route("/delete/{page}", name="delete")
      */
-    public function deleteAction($page, SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
+    public function deleteAction($page, SessionInterface $session, Pdftk $pdftk, TranslatorInterface $translator)
     {
         $page = intval($page);
 
         if ($page > 0 AND $page <= count($session->get('pdf_pages'))) {
-            $pdftk = new Pdftk($session, $logger);
 
             if ($pdftk->delete($page)) {
                 $session->getFlashBag()->add(
@@ -188,9 +181,8 @@ class DefaultController extends AbstractController
     /**
      * @Route("/download/", name="download")
      */
-    public function downloadAction(SessionInterface $session, LoggerInterface $logger, TranslatorInterface $translator)
+    public function downloadAction(SessionInterface $session, Pdftk $pdftk, TranslatorInterface $translator)
     {
-        $pdftk = new Pdftk($session, $logger);
         if (!$pdftk->download()) {
             $session->getFlashBag()->add(
                 'error', $translator->trans('Error: Download could not be started!'));
@@ -200,7 +192,6 @@ class DefaultController extends AbstractController
 
     /**
      * @Route("/restart/", name="restart")
-     * @param SessionInterface $session
      */
     public function restart(SessionInterface $session)
     {
@@ -210,22 +201,17 @@ class DefaultController extends AbstractController
 
     /**
      * @Route("/add/", name="add")
-     * @param SessionInterface $session
      */
-    public function add(Request $request, LoggerInterface $logger)
+    public function add(Request $request, Pdftk $pdftk)
     {
-        $pdftk = new Pdftk($request->getSession(), $logger);
-
         $file = $request->files->get('appendfile');
         $check = $pdftk->appendFile($file);
-
 
         if ($check) {
             return $this->redirectToRoute('process');
         }
 
         return $this->redirectToRoute('show');
-
     }
 
 
