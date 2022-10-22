@@ -1,4 +1,4 @@
-{% extends 'bootstrap4.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block body %}
 
@@ -7,29 +7,29 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="mainnavbar">
-        <h1 class="navbar-brand"><strong><i class="fa fa-fw fa-file-o" aria-hidden="true"></i> Rearrange PDF</strong></h1>
+        <h1 class="navbar-brand mx-3"><i class="fas fa-file-pdf" aria-hidden="true"></i> Rearrange PDF</h1>
         <ul class="navbar-nav mx-auto">
-            <li class="nav-item mr-3 mr-xl-4">
+            <li class="nav-item me-3 me-xl-4">
                 <strong>{% trans %}File name:{% endtrans %}</strong> {{ pdf_shorten_filename }}
             </li>
-            <li class="nav-item mr-3 mr-xl-4">
+            <li class="nav-item me-3 me-xl-4">
                 <strong>{% trans %}File size:{% endtrans %}</strong> {{ pdf_filesize }}
             </li>
-            <li class="nav-item mr-3 mr-xl-4">
+            <li class="nav-item me-3 me-xl-4">
                 <strong>{% trans %}Number of pages:{% endtrans %}</strong> {{ pdf_pages|length }}
             </li>
         </ul>
         <form id="addform" method="post" action="/add/" enctype="multipart/form-data">
-            <div class="mx-2 d-flex align-items-center">
+            <div class="mx-3 d-flex align-items-center">
                 <a href="/download/" class="btn btn-primary">
-                    <i class="fa fa-fw fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
+                    <i class="fas fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
                 </a>
-                <label for="file-upload" class="mt-2 mx-2 btn btn-primary d-block">
-                    <i class="fa fa-fw fa-plus" aria-hidden="true"></i> {% trans %}Append file{% endtrans %}
+                <label for="file-upload" class="mx-3 btn btn-primary d-block">
+                    <i class="fas fa-plus" aria-hidden="true"></i> {% trans %}Append file{% endtrans %}
                 </label>
                 <input id="file-upload" type="file" class="d-none" name="appendfile" onchange="document.getElementById('addform').submit();">
                 <a href="/restart/" class="btn btn-secondary">
-                    <i class="fa fa-fw fa-refresh" aria-hidden="true"></i> {% trans %}Restart with a new File{% endtrans %}
+                    <i class="fas fa-sync" aria-hidden="true"></i> {% trans %}Restart with a new File{% endtrans %}
                 </a>
             </div>
         </form>
@@ -38,24 +38,21 @@
 </nav>
 
 <div class="container-fluid py-5 my-5">
-
         <div class="w-75 px-5 mx-auto">
 
                 {% if app.session.flashBag.has('error') %}
                     {% for msg in app.session.flashBag.get('error') %}
                     <div class="alert alert-danger alert-dismissible fade show text-center" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span> </button>
                         {{ msg }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans %}Close{% endtrans %}"></button>
                     </div>
                     {% endfor %}
                 {% endif %}
                 {% if app.session.flashBag.has('success') %}
                     {% for msg in app.session.flashBag.get('success') %}
                     <div class="alert alert-success alert-dismissible fade show text-center" role="alert">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="{% trans %}Close{% endtrans %}">
-                        <span aria-hidden="true">&times;</span> </button>
                         {{ msg }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="{% trans %}Close{% endtrans %}"></button>
                     </div>
                     {% endfor %}
                 {% endif %}
@@ -68,13 +65,13 @@
                     <div class="card">
                         <div class="card-header d-flex justify-content-end">
 
-                            <a href="/extract/{{ loop.index }}" class="btn btn-sm border ml-2" title="{% trans %}Extract page as PDF{% endtrans %}"><i class="fa fa-file-pdf-o"></i></a>
-                            <a href="/screenshot/{{ loop.index }}" class="btn btn-sm border ml-2" title="{% trans %}Download screenshot{% endtrans %}"><i class="fa fa-file-image-o"></i> </a>
-                            <a href="/moveup/{{ loop.index }}" class="btn btn-sm border ml-2 {% if loop.index == 1 %}disabled{% endif %}" title="{% trans %}Move page up{% endtrans %}"><i class="fa fa-arrow-up"></i></a>
-                            <a href="/movedown/{{ loop.index }}" class="btn btn-sm border ml-2 {% if loop.index == pdf_pages|length %}disabled{% endif %}" title="{% trans %}Move page down{% endtrans %}"><i class="fa fa-arrow-down"></i></a>
-                            <a href="/rotate/left/{{ loop.index }}" class="btn btn-sm border ml-2" title="{% trans %}Rotate 90° left{% endtrans %}"><i class="fa fa-rotate-left"></i></a>
-                            <a href="/rotate/right/{{ loop.index }}" class="btn btn-sm border ml-2" title="{% trans %}Rotate 90° right{% endtrans %}"><i class="fa fa-rotate-right"></i></a>
-                            <a href="/delete/{{ loop.index }}" class="btn btn-sm border ml-2 {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('{% trans with { '%number%': loop.index } %}Do you really want to to delete page %number%?{% endtrans %}');" title="{% trans %}Delete page{% endtrans %}"><i class="fa fa-trash"></i></a>
+                            <a href="/extract/{{ loop.index }}" class="btn btn-sm border mx-1" title="{% trans %}Extract page as PDF{% endtrans %}"><i class="fas fa-file-pdf"></i></a>
+                            <a href="/screenshot/{{ loop.index }}" class="btn btn-sm border mx-1" title="{% trans %}Download screenshot{% endtrans %}"><i class="fas fa-file-image"></i> </a>
+                            <a href="/moveup/{{ loop.index }}" class="btn btn-sm border mx-1 {% if loop.index == 1 %}disabled{% endif %}" title="{% trans %}Move page up{% endtrans %}"><i class="fas fa-arrow-up"></i></a>
+                            <a href="/movedown/{{ loop.index }}" class="btn btn-sm border mx-1 {% if loop.index == pdf_pages|length %}disabled{% endif %}" title="{% trans %}Move page down{% endtrans %}"><i class="fas fa-arrow-down"></i></a>
+                            <a href="/rotate/left/{{ loop.index }}" class="btn btn-sm border mx-1" title="{% trans %}Rotate 90° left{% endtrans %}"><i class="fas fa-undo"></i></a>
+                            <a href="/rotate/right/{{ loop.index }}" class="btn btn-sm border mx-1" title="{% trans %}Rotate 90° right{% endtrans %}"><i class="fas fa-redo"></i></a>
+                            <a href="/delete/{{ loop.index }}" class="btn btn-sm border mx-1 {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('{% trans with { '%number%': loop.index } %}Do you really want to to delete page %number%?{% endtrans %}');" title="{% trans %}Delete page{% endtrans %}"><i class="fas fa-trash"></i></a>
 
                         </div>
                         <div class="card-block">

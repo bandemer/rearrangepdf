@@ -1,3 +1,17 @@
-body {
-    background-color: lightgray;
+
+@import "~bootstrap/scss/bootstrap";
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
+.container {
+    padding-top:1rem;
 }
+.card {
+    margin-top:1rem;
+}
+.download {
+    padding:1rem;
+}
+.label {
+    width:8rem;
+}
+
