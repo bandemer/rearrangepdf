@@ -87,8 +87,8 @@ class Pdftk {
         $this->logger->info('Send shell');
         $output = shell_exec($command);
         $this->logShellCommand($command, $output);
-        if (!preg_match('/pdftk 2\./', $output)) {
-            $errors[] = 'PDFTK Version 2 is required';
+        if (!preg_match('/[2-3]\.[0-9]/', $output)) {
+            $errors[] = 'PDFTK is required';
         }
 
         //check permissions for screenshots directory
