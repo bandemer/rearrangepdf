@@ -2,43 +2,43 @@
 
 {% block body %}
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top border p-3">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainnavbar" aria-controls="mainnavbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="mainnavbar">
-        <h1 class="navbar-brand mx-3"><i class="fas fa-file-pdf" aria-hidden="true"></i> Rearrange PDF</h1>
-        <ul class="navbar-nav mx-auto">
-            <li class="nav-item me-3 me-xl-4">
+<nav class="navbar navbar-expand-xl navbar-light bg-light fixed-top border p-3">
+
+        <h1 class="navbar-brand mx-lg-3"><i class="fas fa-file-pdf" aria-hidden="true"></i> Rearrange PDF</h1>
+        <ul class="navbar-nav d-none d-xl-flex mx-auto">
+            <li class="nav-item me-2 me-xl-4">
                 <strong>{% trans %}File name:{% endtrans %}</strong> {{ pdf_shorten_filename }}
             </li>
-            <li class="nav-item me-3 me-xl-4">
+            <li class="nav-item me-2 me-xl-4">
                 <strong>{% trans %}File size:{% endtrans %}</strong> {{ pdf_filesize }}
             </li>
-            <li class="nav-item me-3 me-xl-4">
+            <li class="nav-item me-2 me-xl-4">
                 <strong>{% trans %}Number of pages:{% endtrans %}</strong> {{ pdf_pages|length }}
             </li>
         </ul>
         <form id="addform" method="post" action="/add/" enctype="multipart/form-data">
-            <div class="mx-3 d-flex align-items-center">
-                <a href="/download/" class="btn btn-primary">
-                    <i class="fas fa-download" aria-hidden="true"></i> {% trans %}Download PDF{% endtrans %}
+            <div class="mx-lg-3 d-flex align-items-center">
+                <a href="#" class="btn btn-primary me-2 d-lg-inline-block d-xl-none">
+                    <i class="fas fa-info-circle" aria-hidden="true"></i>
                 </a>
-                <label for="file-upload" class="mx-3 btn btn-primary d-block">
-                    <i class="fas fa-plus" aria-hidden="true"></i> {% trans %}Append file{% endtrans %}
+                <a href="/download/" class="btn btn-primary">
+                    <i class="fas fa-download me-xl-1" aria-hidden="true"></i><span class="d-none d-xl-inline"> {% trans %}Download PDF{% endtrans %}</span>
+                </a>
+                <label for="file-upload" class="mx-2 mx-lg-3 btn btn-primary d-block">
+                    <i class="fas fa-plus me-xl-1" aria-hidden="true"></i><span class="d-none d-xl-inline"> {% trans %}Append file{% endtrans %}</span>
                 </label>
                 <input id="file-upload" type="file" class="d-none" name="appendfile" onchange="document.getElementById('addform').submit();">
                 <a href="/restart/" class="btn btn-secondary">
-                    <i class="fas fa-sync" aria-hidden="true"></i> {% trans %}Restart with a new File{% endtrans %}
+                    <i class="fas fa-sync me-xl-1" aria-hidden="true"></i><span class="d-none d-xl-inline"> {% trans %}Restart with a new File{% endtrans %}</span>
                 </a>
             </div>
         </form>
 
-    </div>
+
 </nav>
 
 <div class="container-fluid py-5 my-5">
-        <div class="w-75 px-5 mx-auto">
+        <div class="w-lg-75 px-1 px-lg-5 mx-auto">
 
                 {% if app.session.flashBag.has('error') %}
                     {% for msg in app.session.flashBag.get('error') %}
@@ -61,7 +61,7 @@
 
                 {% for page in pdf_pages %}
 
-                <div class="col-12 col-lg-6 col-xl-4">
+                <div class="col-12 col-lg-6 col-xl-4 mb-3">
                     <div class="card">
                         <div class="card-header d-flex justify-content-end">
 
@@ -88,8 +88,5 @@
             </div>
         </div>
 
-        
-    </div>
-        
 </div>
 {% endblock %}
