@@ -130,6 +130,10 @@
                 <source>Restart with a new File</source>
                 <target>Mit neuer Datei starten</target>
             </trans-unit>
+            <trans-unit id="t33">
+                <source>Information about the document</source>
+                <target>Informationen über das Dokument</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>
