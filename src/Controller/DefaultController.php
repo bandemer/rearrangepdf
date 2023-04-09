@@ -14,9 +14,7 @@ use App\Service\Pdftk;
 
 class DefaultController extends AbstractController
 {
-    /**
-     * @Route("/", name="index")
-     */
+    #[Route(path: '/', name: 'index')]
     public function indexAction(Request $request, Pdftk $pdftk)
     {
         $errors = $pdftk->checkRequirements();
@@ -53,9 +51,7 @@ class DefaultController extends AbstractController
         ));
     }
 
-    /**
-     * @Route("/show/", name="show")
-     */
+    #[Route(path: '/show/', name: 'show')]
     public function showAction(SessionInterface $session)
     {
         return $this->render('default/show.html.twig', array(
@@ -69,9 +65,8 @@ class DefaultController extends AbstractController
 
     /**
      * Split PDF into Pages
-     *
-     * @Route("/process/", name="process")
      */
+    #[Route(path: '/process/', name: 'process')]
     public function processAction(Pdftk $pdftk)
     {
         $pdftk->processFile();
@@ -81,9 +76,8 @@ class DefaultController extends AbstractController
 
     /**
      * Download single page as PDF
-     *
-     * @Route("/extract/{page}", name="extract")
      */
+    #[Route(path: '/extract/{page}', name: 'extract')]
     public function extractAction(int $page, Pdftk $pdftk, SessionInterface $session, TranslatorInterface $translator)
     {
         $page = intval($page);
@@ -98,9 +92,8 @@ class DefaultController extends AbstractController
 
     /**
      * Download single page as JPG-Image
-     *
-     * @Route("/screenshot/{page}", name="screenshot")
      */
+    #[Route(path: '/screenshot/{page}', name: 'screenshot')]
     public function screenshotAction(int $page, SessionInterface $session, Pdftk $pdftk, TranslatorInterface $translator)
     {
         $page = intval($page);
@@ -114,9 +107,7 @@ class DefaultController extends AbstractController
         return $this->redirectToRoute('show');
     }
 
-    /**
-     * @Route("/move{direction}/{page}", name="move")
-     */
+    #[Route(path: '/move{direction}/{page}', name: 'move')]
     public function moveAction($direction, int $page, SessionInterface $session, Pdftk $pdftk, TranslatorInterface $translator)
     {
         $page = intval($page);
@@ -133,9 +124,7 @@ class DefaultController extends AbstractController
         return $this->redirectToRoute('show');
     }
 
-    /**
-     * @Route("/rotate/{direction}/{page}", name="rotate")
-     */
+    #[Route(path: '/rotate/{direction}/{page}', name: 'rotate')]
     public function rotateAction($direction, int $page, SessionInterface $session, Pdftk $pdftk, TranslatorInterface $translator)
     {
         $page = intval($page);
@@ -152,9 +141,7 @@ class DefaultController extends AbstractController
         return $this->redirectToRoute('show');
     }
 
-    /**
-     * @Route("/delete/{page}", name="delete")
-     */
+    #[Route(path: '/delete/{page}', name: 'delete')]
     public function deleteAction($page, SessionInterface $session, Pdftk $pdftk, TranslatorInterface $translator)
     {
         $page = intval($page);
@@ -178,9 +165,7 @@ class DefaultController extends AbstractController
         return $this->redirectToRoute('show');
     }
 
-    /**
-     * @Route("/download/", name="download")
-     */
+    #[Route(path: '/download/', name: 'download')]
     public function downloadAction(SessionInterface $session, Pdftk $pdftk, TranslatorInterface $translator)
     {
         if (!$pdftk->download()) {
@@ -190,18 +175,14 @@ class DefaultController extends AbstractController
         return $this->redirectToRoute('show');
     }
 
-    /**
-     * @Route("/restart/", name="restart")
-     */
+    #[Route(path: '/restart/', name: 'restart')]
     public function restart(SessionInterface $session)
     {
         $session->clear();
         return $this->redirectToRoute('index');
     }
 
-    /**
-     * @Route("/add/", name="add")
-     */
+    #[Route(path: '/add/', name: 'add')]
     public function add(Request $request, Pdftk $pdftk)
     {
         $file = $request->files->get('appendfile');
