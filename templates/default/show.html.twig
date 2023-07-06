@@ -34,7 +34,7 @@
 </nav>
 
 <div class="container-fluid py-5 my-5">
-    <div class="w-lg-75 px-1 px-lg-5 mx-auto">
+    <div class="px-1 px-xl-5 mx-auto">
 
             {% if app.session.flashBag.has('error') %}
                 {% for msg in app.session.flashBag.get('error') %}
@@ -57,22 +57,20 @@
 
             {% for page in pdf_pages %}
 
-            <div class="col-12 col-lg-6 col-xl-4 mb-3">
-                <div class="card">
+            <div class="col-12 col-md-6 col-lg-4 col-xl-3 mb-3">
+                <div class="card h-100">
                     <div class="card-header d-flex justify-content-end">
-
-                        <a href="/extract/{{ loop.index }}" class="btn btn-sm border mx-1" title="{% trans %}Extract page as PDF{% endtrans %}"><i class="fas fa-file-pdf"></i></a>
-                        <a href="/screenshot/{{ loop.index }}" class="btn btn-sm border mx-1" title="{% trans %}Download screenshot{% endtrans %}"><i class="fas fa-file-image"></i> </a>
-                        <a href="/moveup/{{ loop.index }}" class="btn btn-sm border mx-1 {% if loop.index == 1 %}disabled{% endif %}" title="{% trans %}Move page up{% endtrans %}"><i class="fas fa-arrow-up"></i></a>
-                        <a href="/movedown/{{ loop.index }}" class="btn btn-sm border mx-1 {% if loop.index == pdf_pages|length %}disabled{% endif %}" title="{% trans %}Move page down{% endtrans %}"><i class="fas fa-arrow-down"></i></a>
-                        <a href="/rotate/left/{{ loop.index }}" class="btn btn-sm border mx-1" title="{% trans %}Rotate 90° left{% endtrans %}"><i class="fas fa-undo"></i></a>
-                        <a href="/rotate/right/{{ loop.index }}" class="btn btn-sm border mx-1" title="{% trans %}Rotate 90° right{% endtrans %}"><i class="fas fa-redo"></i></a>
-                        <a href="/delete/{{ loop.index }}" class="btn btn-sm border mx-1 {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('{% trans with { '%number%': loop.index } %}Do you really want to to delete page %number%?{% endtrans %}');" title="{% trans %}Delete page{% endtrans %}"><i class="fas fa-trash"></i></a>
-
+                        <a href="/extract/{{ loop.index }}" class="btn btn-sm border ms-1" title="{% trans %}Extract page as PDF{% endtrans %}"><i class="fas fa-file-pdf"></i></a>
+                        <a href="/screenshot/{{ loop.index }}" class="btn btn-sm border ms-1" title="{% trans %}Download screenshot{% endtrans %}"><i class="fas fa-file-image"></i> </a>
+                        <a href="/moveup/{{ loop.index }}" class="btn btn-sm border ms-1 {% if loop.index == 1 %}disabled{% endif %}" title="{% trans %}Move page up{% endtrans %}"><i class="fas fa-arrow-up"></i></a>
+                        <a href="/movedown/{{ loop.index }}" class="btn btn-sm border ms-1 {% if loop.index == pdf_pages|length %}disabled{% endif %}" title="{% trans %}Move page down{% endtrans %}"><i class="fas fa-arrow-down"></i></a>
+                        <a href="/rotate/left/{{ loop.index }}" class="btn btn-sm border ms-1" title="{% trans %}Rotate 90° left{% endtrans %}"><i class="fas fa-undo"></i></a>
+                        <a href="/rotate/right/{{ loop.index }}" class="btn btn-sm border ms-1" title="{% trans %}Rotate 90° right{% endtrans %}"><i class="fas fa-redo"></i></a>
+                        <a href="/delete/{{ loop.index }}" class="btn btn-sm border ms-1 {% if pdf_pages|length == 1 %}disabled{% endif %}" onclick="return confirm('{% trans with { '%number%': loop.index } %}Do you really want to to delete page %number%?{% endtrans %}');" title="{% trans %}Delete page{% endtrans %}"><i class="fas fa-trash"></i></a>
                     </div>
-                    <div class="card-block">
-                        <div class="m-3 text-center">
-                            <img src="/{{ page }}" alt="{% trans %}Screenshot of page{% endtrans %} {{ loop.index }}" class="img img-fluid border border-1">
+                    <div class="card-block d-flex flex-column h-100">
+                        <div class="m-3 text-center flex-grow-1 h-100 d-flex flex-column justify-content-around">
+                            <img src="/{{ page }}" alt="{% trans %}Screenshot of page{% endtrans %} {{ loop.index }}" class="img img-fluid border mx-sm-5">
                         </div>
                         <div class="m-3 text-center">{% trans %}Page{% endtrans %} {{ loop.index }}</div>
                     </div>
