@@ -1,45 +1,48 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+<div class="d-flex flex-column vh-100">
+	<div class="container my-lg-5">
 
-<div class="container my-lg-5">
+		<div class="d-flex justify-content-between">
+			<h1>
+				<a href="{{ url('index') }}" class="text-dark text-decoration-none">
+					<i class="fas fa-file-pdf" aria-hidden="true"></i> Rearrange PDF</a>
+			</h1>
+			<span>
+				<a href="https://github.com/bandemer/rearrangepdf" class="btn btn-secondary py-2">
+					<i class="fab fa-github" aria-hidden="true"></i> {% trans %}View on GitHub{% endtrans %}</a>
+			</span>
+		</div>
+		<hr>
 
-	<div class="d-flex justify-content-between">
-		<h1>
-			<strong><i class="fas fa-file-pdf" aria-hidden="true"></i> Rearrange PDF</strong>
-		</h1>
-		<span>
-			<a href="https://github.com/bandemer/rearrangepdf" class="btn btn-secondary py-2"><i class="fab fa-github" aria-hidden="true"></i> {% trans %}View on GitHub{% endtrans %}</a>
-		</span>
+		{%  if errors %}
+		<div class="alert alert-danger" role="alert">
+			<h2 class="h4">{% trans %}The requirements on the server are not met:{% endtrans %}</h2>
+			<ul>
+			{% for e in errors %}
+				<li>{{ e }}</li>
+			{% endfor %}
+			</ul>
+		</div>
+		{% else %}
+
+		<div class="bg-light border rounded p-4 p-lg-5">
+			{% if app.session.flashBag.has('error') %}
+			<div class="alert alert-danger" role="alert">
+				{% for msg in app.session.flashBag.get('error') %}
+					{{ msg }}
+				{% endfor %}
+			</div>
+			{% endif %}
+
+			{{ form_start(form) }}
+			{{ form_widget(form) }}
+			{{ form_end(form) }}
+		</div>
+		{% endif %}
 	</div>
-	<hr>
-
-	{%  if errors %}
-	<div class="alert alert-danger" role="alert">
-		<h2 class="h4">{% trans %}The requirements on the server are not met:{% endtrans %}</h2>
-		<ul>
-		{% for e in errors %}
-			<li>{{ e }}</li>
-		{% endfor %}
-		</ul>
-	</div>
-	{% else %}
-
-	<div class="bg-light border rounded p-4 p-lg-5">
-	    {% if app.session.flashBag.has('error') %}
-	    <div class="alert alert-danger" role="alert">
-	        {% for msg in app.session.flashBag.get('error') %}
-	            {{ msg }}
-	        {% endfor %}
-	    </div>
-	    {% endif %}
-
-	    {{ form_start(form) }}
-	    {{ form_widget(form) }}
-	    {{ form_end(form) }}
-    </div>
-	{% endif %}
-        
+	{% include 'default/footer.html.twig' %}
 </div>
 {% endblock %}
 

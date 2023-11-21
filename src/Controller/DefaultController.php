@@ -5,6 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -195,5 +196,15 @@ class DefaultController extends AbstractController
         return $this->redirectToRoute('show');
     }
 
+    #[Route(path: '/privacy/', name: 'privacy')]
+    public function privacy() : Response
+    {
+        return $this->render('default/privacy.html.twig');
+    }
 
+    #[Route(path: '/imprint/', name: 'imprint')]
+    public function imprint() : Response
+    {
+        return $this->render('default/imprint.html.twig');
+    }
 }

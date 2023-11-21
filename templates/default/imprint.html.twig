@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <div class="d-flex flex-column vh-100">
+        <div class="container my-lg-5">
+            <div class="d-flex justify-content-between">
+                <h1>
+                    <a href="{{ url('index') }}" class="text-dark text-decoration-none">
+                        <i class="fas fa-file-pdf" aria-hidden="true"></i> Rearrange PDF</a>
+                </h1>
+                <span>
+				    <a href="https://github.com/bandemer/rearrangepdf" class="btn btn-secondary py-2">
+                        <i class="fab fa-github" aria-hidden="true"></i> {% trans %}View on GitHub{% endtrans %}</a>
+			    </span>
+            </div>
+            <hr>
+            <nav aria-label="breadcrumb" class="my-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url('index') }}">{% trans %}Home{% endtrans %}</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">{% trans %}Imprint{% endtrans %}</li>
+                </ol>
+            </nav>
+            <div class="py-4 py-lg-5">
+                <h2>{% trans %}Imprint{% endtrans %}</h2>
+                <p>{% trans %}Add your content here.{% endtrans %}</p>
+            </div>
+        </div>
+        {% include 'default/footer.html.twig' %}
+    </div>
+{% endblock %}

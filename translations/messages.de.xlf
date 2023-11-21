@@ -134,6 +134,26 @@
                 <source>Information about the document</source>
                 <target>Informationen über das Dokument</target>
             </trans-unit>
+            <trans-unit id="t34">
+                <source>Home</source>
+                <target>Startseite</target>
+            </trans-unit>
+            <trans-unit id="t35">
+                <source>Data Privacy</source>
+                <target>Datenschutz</target>
+            </trans-unit>
+            <trans-unit id="t36">
+                <source>Data Privacy Statement</source>
+                <target>Erklärung zum Datenschutz</target>
+            </trans-unit>
+            <trans-unit id="t37">
+                <source>Imprint</source>
+                <target>Impressum</target>
+            </trans-unit>
+            <trans-unit id="t38">
+                <source>Add your content here.</source>
+                <target>Fügen Sie hier Ihre Inhalte ein.</target>
+            </trans-unit>
         </body>
     </file>
 </xliff>

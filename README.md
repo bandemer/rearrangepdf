@@ -1,7 +1,5 @@
 # RearrangePDF
 
----
-
 A web app for modifying PDF files. 
 
 This software is currently in development.
