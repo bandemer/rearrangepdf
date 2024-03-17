@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Contracts\Translation\TranslatorInterface;
@@ -19,37 +20,27 @@ class DefaultController extends AbstractController
     public function indexAction(Request $request, Pdftk $pdftk)
     {
         $errors = $pdftk->checkRequirements();
+        return $this->render('default/index.html.twig', ['errors' => $errors]);
+    }
 
-        $form = $this->createFormBuilder()
-            ->add('pdf', FileType::class, array('label' => 'PDF file:'))
-            ->add('save', SubmitType::class, array('label' => 'Upload'))
-            ->getForm();
+    #[Route(path: '/upload/', name: 'upload')]
+    public function upload(Request $request, Pdftk $pdftk) : JsonResponse
+    {
 
-        $form->handleRequest($request);
+        $check = false;
+        $responseMessage = '';
 
-        if ($form->isSubmitted() && $form->isValid()) {
-
-            $check = false;
-
-            foreach ($request->files AS $file) {
-
-                foreach ($file AS $f) {
-                    $check = $pdftk->prepareUploadedFile($f);
-                    break;
-                }
-                break;
-            }
-
-            if ($check) {
-                return $this->redirectToRoute('process');
-            } else {
-                return $this->redirectToRoute('index');
-            }
+        foreach ($request->files AS $file) {
+            $check = $pdftk->prepareUploadedFile($file);
         }
-        return $this->render('default/index.html.twig', array(
-            'form' => $form->createView(),
-            'errors' => $errors
-        ));
+
+        $responseCode = 200;
+
+        if (!$check) {
+            $responseCode = 400;
+        }
+
+        return new JsonResponse(['data' => ['message' => $responseMessage]], $responseCode);
     }
 
     #[Route(path: '/show/', name: 'show')]
@@ -68,11 +59,17 @@ class DefaultController extends AbstractController
      * Split PDF into Pages
      */
     #[Route(path: '/process/', name: 'process')]
-    public function processAction(Pdftk $pdftk)
+    public function processAction(Pdftk $pdftk) : JsonResponse
     {
-        $pdftk->processFile();
+        $responseCode = 400;
+        $responseMessage = 'Error!';
 
-        return $this->redirectToRoute('show');
+        if ($pdftk->processFile()) {
+            $responseCode = 200;
+            $responseMessage = 'OK!';
+        }
+
+        return new JsonResponse(['data' => ['message' => $responseMessage]], $responseCode);
     }
 
     /**

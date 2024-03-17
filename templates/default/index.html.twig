@@ -35,14 +35,75 @@
 				{% endfor %}
 			</div>
 			{% endif %}
+			<div class="row my-xl-5">
+				<p>Choose a PDF file and click "Start":</p>
+				<div class="col-12 col-lg-8 my-3">
+					<input id="fileupload" type="file" class="form-control form-control-lg">
+				</div>
+				<div class="col-12 col-lg-4 my-3">
+					<button id="fileuploadbutton" class="btn btn-primary btn-lg">Start</button>
+				</div>
+			</div>
 
-			{{ form_start(form) }}
-			{{ form_widget(form) }}
-			{{ form_end(form) }}
 		</div>
 		{% endif %}
 	</div>
 	{% include 'default/footer.html.twig' %}
 </div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+	document.getElementById('fileuploadbutton').addEventListener('click', function() {
+		if(document.getElementById('fileupload').files.length == 0) {
+			alert('Error : No file selected');
+			return;
+		}
+
+		let file = document.getElementById('fileupload').files[0];
+		let allowed_mime_types = [ 'application/pdf' ];
+		let allowed_size_mb = 8;
+
+		if(allowed_mime_types.indexOf(file.type) == -1) {
+			alert('Error : Incorrect file type ' + file.type);
+			return;
+		}
+
+		if(file.size > allowed_size_mb*1024*1024) {
+			alert('Error : Exceeded size');
+			return;
+		}
+
+		let data = new FormData();
+		data.append('file', document.getElementById('fileupload').files[0]);
+
+		let request = new XMLHttpRequest();
+		request.open('POST', '/upload/');
+
+		// upload progress event
+		request.upload.addEventListener('progress', function(e) {
+			let percent_complete = Math.round((e.loaded / e.total) * 100);
+			document.getElementById('fileuploadbutton').innerHTML =
+					'<span class="spinner-grow spinner-grow-sm me-2" aria-hidden="true"></span><span role="status">Uploading... ' + percent_complete +' %</span>';
+		});
+
+		// start file processing
+		request.addEventListener('load', function(e) {
+			document.getElementById('fileuploadbutton').innerHTML =
+					'<span class="spinner-grow spinner-grow-sm me-2" aria-hidden="true"></span><span role="status">Processing...</span>';
+
+			fetch('/process/')
+				.then((response) => {
+					if (response.ok) {
+						setTimeout("document.location = '/show/'", 3000);
+					}
+				});
+		});
+		request.send(data);
+		document.getElementById('fileuploadbutton').disabled = true;
+		document.getElementById('fileuploadbutton').innerHTML =
+				'<span class="spinner-grow spinner-grow-sm me-2" aria-hidden="true"></span><span role="status">Uploading...</span>';
+	});
+</script>
 {% endblock %}
 
